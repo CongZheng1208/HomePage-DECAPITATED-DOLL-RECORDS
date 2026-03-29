@@ -10,7 +10,9 @@ const Metallic3DScene = () => {
 
   useEffect(() => {
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
+    // ✅ 修复：把 window 放在 useEffect 里，构建安全
+    const aspect = window.innerWidth / window.innerHeight;
+    const camera = new THREE.PerspectiveCamera(50, aspect, 0.1, 1000);
     camera.position.z = 35;
 
     const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
@@ -80,6 +82,7 @@ const App = () => {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [menuOpen, setMenuOpen] = useState(false);
   const [lang, setLang] = useState('en');
+  const [isMobile, setIsMobile] = useState(false); // ✅ 修复用
 
   const { scrollYProgress } = useScroll();
   
@@ -116,6 +119,14 @@ const App = () => {
     target: designRef,
     offset: ["start 60%", "end 40%"]
   });
+
+  // ✅ 修复：监听窗口宽度，安全使用
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const translations = {
     en: {
@@ -188,7 +199,6 @@ const App = () => {
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
 
-  // VISUAL STATIC_DECAY 图片尺寸整体增大50%
   const designItemsConfig = [
     { width: 420, top: '5%', left: '5%', rotate: -8 },
     { width: 480, top: '2%', left: '35%', rotate: 5 },
@@ -305,19 +315,18 @@ const App = () => {
         .hero-quote p.main { font-size: clamp(1rem, 4vw, 1.5rem); font-weight: 900; font-style: italic; color: #fff; line-height: 1.3; margin-bottom: 1rem; }
         .hero-quote p.sub { font-size: 10px; color: rgba(255,255,255,0.4); letter-spacing: 0.2em; line-height: 1.6; }
 
-        /* 🔥 修改1：OPERATOR 永久单列布局，图片永远在文字上方 */
         .master-section { 
           padding: 6rem 5%; 
           display: grid; 
           grid-template-columns: 1fr; 
           gap: 4rem; 
           align-items: start;
-          place-items: center; /* 居中展示 */
+          place-items: center;
         }
         @media (min-width: 1024px) { 
           .master-section { 
             padding: 10rem 10%; 
-            grid-template-columns: 1fr; /* 强制保持单列，取消并排 */
+            grid-template-columns: 1fr; 
             gap: 6rem; 
           } 
         }
@@ -327,7 +336,6 @@ const App = () => {
           border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(10px);
           position: relative; overflow: hidden;
         }
-        /* 🔥 修改1：OPERATOR 图片尺寸再次加大，永久保持大尺寸 */
         .master-portrait { 
           aspect-ratio: 3/4; 
           border: 1px solid rgba(255,20,147,0.4); 
@@ -343,7 +351,6 @@ const App = () => {
           height: 100%; 
           object-fit: cover; 
           object-position: center;
-          transform: none !important;
         }
         
         .pink-particle { position: absolute; background: var(--accent-pink); border-radius: 50%; filter: blur(2px); box-shadow: 0 0 10px var(--accent-pink); }
@@ -374,7 +381,6 @@ const App = () => {
           margin: 0;
           border-left: none;
           background: linear-gradient(to right, rgba(0,0,0,0.1), rgba(0,0,0,0.7));
-          // backdrop-filter: blur(2px);
           white-space: nowrap;
           max-width: 100%; 
         }
@@ -395,16 +401,14 @@ const App = () => {
         .apparel-item { 
           aspect-ratio: 3/4; position: relative; overflow: hidden; background: #111; cursor: crosshair;
         }
-        /* 🔥 修改2：APPAREL 默认低对比度灰色调 */
         .apparel-img { 
           width: 100%; height: 100%; object-fit: cover; 
           transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1); 
-          filter: grayscale(0.5) contrast(0.6) saturate(0.4); /* 灰色低对比 */
+          filter: grayscale(0.5) contrast(0.6) saturate(0.4);
         }
-        /* 🔥 修改2：APPAREL hover 恢复原色 + 轻微放大 */
         .apparel-item:hover .apparel-img { 
-          transform: scale(1.08) !important; /* 轻微放大 */
-          filter: grayscale(0) contrast(1) saturate(1); /* 恢复原色 */
+          transform: scale(1.08) !important;
+          filter: grayscale(0) contrast(1) saturate(1);
         }
         .apparel-overlay {
           position: absolute; inset: 0; background: rgba(255,20,147,0.1); opacity: 0;
@@ -460,11 +464,10 @@ const App = () => {
           position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
           background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); transition: 0.5s;
         }
-        /* 🔥 修改3：CONNECT WECHAT 文字增加左边距 */
         .wechat-overlay span {
           font-family: var(--syne); font-size: clamp(2rem, 5vw, 3rem); font-weight: 900;
           color: #fff; text-shadow: 0 0 15px var(--accent-pink); letter-spacing: 0.1em;
-          margin-left: 1.5rem; /* 新增左边距 */
+          margin-left: 1.5rem;
         }
         .wechat-hero-btn:hover img { transform: scale(1.05); opacity: 1; filter: grayscale(0); }
         .wechat-hero-btn:hover .wechat-overlay { background: rgba(255,20,147,0.2); backdrop-filter: blur(0px); }
@@ -526,9 +529,6 @@ const App = () => {
               <a key={s.id} href={`#${s.id}`}>{s.name}</a>
             ))}
           </nav>
-          {/* <button onClick={() => setLang(lang === 'en' ? 'zh' : 'en')} className="lang-btn">
-            {lang === 'en' ? 'EN / 中' : '中 / EN'}
-          </button> */}
         </div>
       </header>
 
@@ -552,7 +552,6 @@ const App = () => {
           </motion.div>
         </section>
 
-        {/* 已修改：OPERATOR 永久单列，图片在上文字在下+超大尺寸 */}
         <section id="master" className="master-section" ref={masterRef}>
           <div className="chrome-card master-portrait">
             <motion.img 
@@ -717,7 +716,6 @@ const App = () => {
                       style={{
                         width: '100%',
                         height: 'auto',
-                        // object-fit: 'cover',
                         filter: 'grayscale(0.8) brightness(0.7)',
                         border: '1px solid rgba(255,255,255,0.05)',
                         transition: 'all 0.5s ease',
@@ -772,7 +770,19 @@ const App = () => {
             </a>
           </div>
           
-          <div style={{ marginTop: '6rem', paddingTop: '2rem', borderTop: '1px solid rgba(255,255,255,0.05)', display: 'flex', flexDirection: window.innerWidth < 768 ? 'column' : 'row', justifyContent: 'space-between', alignItems: 'center', gap: '2rem', fontSize: '10px', opacity: 0.3, fontWeight: 900 }}>
+          <div style={{ 
+            marginTop: '6rem', 
+            paddingTop: '2rem', 
+            borderTop: '1px solid rgba(255,255,255,0.05)', 
+            display: 'flex', 
+            flexDirection: isMobile ? 'column' : 'row', // ✅ 修复
+            justifyContent: 'space-between', 
+            alignItems: 'center', 
+            gap: '2rem', 
+            fontSize: '10px', 
+            opacity: 0.3, 
+            fontWeight: 900 
+          }}>
             <div style={{ letterSpacing: '0.1em' }}>{t.copyright}</div>
             <div style={{ display: 'flex', gap: '2rem', letterSpacing: '0.2em' }}>
               <span>PRIVACY</span><span>TERMS</span><span>ARCHIVE</span>
