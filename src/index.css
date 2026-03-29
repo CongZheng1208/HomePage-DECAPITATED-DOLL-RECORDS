@@ -1,0 +1,21 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .font-syne {
+    font-family: 'Syne', sans-serif;
+  }
+  .laser-text {
+    background: linear-gradient(90deg, #e0e0e0, #ff007f, #fff, #ff007f, #e0e0e0);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: laser 4s linear infinite;
+  }
+  @keyframes laser {
+    to {
+      background-position: 200% center;
+    }
+  }
+}
