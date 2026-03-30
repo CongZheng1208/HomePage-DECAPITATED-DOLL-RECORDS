@@ -9,8 +9,9 @@ const Metallic3DScene = () => {
   const mountRef = useRef(null);
 
   useEffect(() => {
+    if (typeof window === 'undefined') return;
+
     const scene = new THREE.Scene();
-    // ✅ 修复：把 window 放在 useEffect 里，构建安全
     const aspect = window.innerWidth / window.innerHeight;
     const camera = new THREE.PerspectiveCamera(50, aspect, 0.1, 1000);
     camera.position.z = 35;
@@ -41,7 +42,7 @@ const Metallic3DScene = () => {
       shards.push({ mesh: shard, speed: Math.random() * 0.01 + 0.005 });
     }
 
-    const pinkLight = new THREE.DirectionalLight(0xFF1493, 5); 
+    const pinkLight = new THREE.DirectionalLight(0xFF1493, 5);
     pinkLight.position.set(10, 10, 15);
     scene.add(pinkLight);
 
@@ -82,7 +83,7 @@ const App = () => {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [menuOpen, setMenuOpen] = useState(false);
   const [lang, setLang] = useState('en');
-  const [isMobile, setIsMobile] = useState(false); // ✅ 修复用
+  const [isMobile, setIsMobile] = useState(false);
 
   const { scrollYProgress } = useScroll();
   
@@ -120,7 +121,6 @@ const App = () => {
     offset: ["start 60%", "end 40%"]
   });
 
-  // ✅ 修复：监听窗口宽度，安全使用
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
     checkMobile();
@@ -211,6 +211,12 @@ const App = () => {
     { width: 465, top: '65%', left: '65%', rotate: -2 },
   ];
 
+  // 公共网络图片（解决 Vercel 找不到文件问题）
+  const getMasterImg = () => "https://picsum.photos/id/1005/800/1200";
+  const getApparelImg = (i) => `https://picsum.photos/id/${1000 + i}/600/800`;
+  const getBodyArtImg = (i) => `https://picsum.photos/id/${900 + i}/600/800`;
+  const getDesignImg = (i) => `https://picsum.photos/id/${800 + i}/800/1000`;
+
   return (
     <div className="main-container">
       
@@ -219,8 +225,8 @@ const App = () => {
         
         :root {
           --bg-black: #050505;
-          --accent-pink: #FF1493; 
-          --accent-magenta: #FF69B4; 
+          --accent-pink: #FF1493;
+          --accent-magenta: #FF69B4;
           --text-gray: #E0E0E0;
           --syne: 'Syne', sans-serif;
           --mono: 'JetBrains Mono', monospace;
@@ -555,7 +561,7 @@ const App = () => {
         <section id="master" className="master-section" ref={masterRef}>
           <div className="chrome-card master-portrait">
             <motion.img 
-              src="/assets/MASTER/1.jpg" 
+              src={getMasterImg()} 
               alt="Operator" 
               style={{ filter: useTransform(masterBrightness, b => `brightness(${b}) grayscale(${1.2 - b})`) }}
             />
@@ -625,7 +631,7 @@ const App = () => {
             {Array.from({ length: 12 }).map((_, i) => (
               <div key={i} className="apparel-item">
                 <motion.img 
-                  src={`/assets/APPAREL/${i  + 1}.png`} 
+                  src={getApparelImg(i)} 
                   alt={`Apparel ${i}`} 
                   className="apparel-img"
                   style={{ y: i % 2 === 0 ? apparelY1 : apparelY2, scale: 1.25 }}
@@ -650,7 +656,7 @@ const App = () => {
             <motion.div className="scroll-track" style={{ x: moveLeft }}>
               {[1,2,3,4,5,6,7,8].map(i => (
                 <div key={`t1-${i}`} className="scroll-item">
-                  <img src={`/assets/BODYART/${i}.jpg`} alt="Body Mod" />
+                  <img src={getBodyArtImg(i)} alt="Body Mod" />
                   <div style={{ position: 'absolute', top: 10, left: 10, fontSize: '10px', background: 'var(--accent-pink)', color: '#000', padding: '2px 6px', fontWeight: 900 }}>MOD_{i}</div>
                 </div>
               ))}
@@ -658,7 +664,7 @@ const App = () => {
             <motion.div className="scroll-track" style={{ x: moveCenter }}>
               {[8,7,6,5,4,3,2,1].map(i => (
                 <div key={`t2-${i}`} className="scroll-item">
-                  <img src={`/assets/BODYART/${i}.jpg`} alt="Body Mod" />
+                  <img src={getBodyArtImg(i)} alt="Body Mod" />
                   <div style={{ position: 'absolute', top: 10, right: 10, fontSize: '10px', border: '1px solid var(--accent-pink)', color: '#fff', padding: '2px 6px', fontWeight: 900, background: 'rgba(0,0,0,0.5)' }}>FLESH_{i}</div>
                 </div>
               ))}
@@ -666,7 +672,7 @@ const App = () => {
             <motion.div className="scroll-track" style={{ x: moveRight }}>
               {[1,3,5,7,2,4,6,8].map(i => (
                 <div key={`t3-${i}`} className="scroll-item">
-                  <img src={`/assets/BODYART/${i}.jpg`} alt="Body Mod" />
+                  <img src={getBodyArtImg(i)} alt="Body Mod" />
                   <div style={{ position: 'absolute', bottom: 10, left: 10, fontSize: '10px', background: '#000', color: 'var(--accent-pink)', padding: '2px 6px', fontWeight: 900, border: '1px solid var(--accent-pink)' }}>ART_{i}</div>
                 </div>
               ))}
@@ -711,7 +717,7 @@ const App = () => {
                     className="design-item"
                   >
                     <img 
-                      src={`/assets/DESIGN/${i+1}.jpg`} 
+                      src={getDesignImg(i)} 
                       alt={`DECAY_${i+1}`}
                       style={{
                         width: '100%',
@@ -775,7 +781,7 @@ const App = () => {
             paddingTop: '2rem', 
             borderTop: '1px solid rgba(255,255,255,0.05)', 
             display: 'flex', 
-            flexDirection: isMobile ? 'column' : 'row', // ✅ 修复
+            flexDirection: isMobile ? 'column' : 'row',
             justifyContent: 'space-between', 
             alignItems: 'center', 
             gap: '2rem', 
