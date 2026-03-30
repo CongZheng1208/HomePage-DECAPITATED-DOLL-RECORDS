@@ -4,16 +4,7 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   build: {
-    chunkSizeWarningLimit: 1000,
-    minify: 'esbuild',
-    rollupOptions: {
-      maxParallelFileOps: 1,
-    },
+    minify: false,
     sourcemap: false,
-  },
-  server: {
-    hmr: {
-      overlay: false,
-    },
   },
 })
