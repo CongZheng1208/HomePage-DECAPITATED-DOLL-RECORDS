@@ -82,7 +82,7 @@ const App = () => {
   const [lang, setLang] = useState('en');
   const [isMobile, setIsMobile] = useState(false);
 
-  // 保留下滑自动视差滑动
+  // 【修改2：恢复下滑自动视差滑动，同时兼容手动无限拖拽】
   const { scrollYProgress } = useScroll();
   const moveLeft = useTransform(scrollYProgress, [0, 1], ['0%', '-80%']);
   const moveRight = useTransform(scrollYProgress, [0, 1], ['-80%', '0%']);
@@ -192,7 +192,7 @@ const App = () => {
     return () => window.removeEventListener('mousemove', move);
   }, []);
 
-  // 保持design部分纵向间距
+  // 【修改3：缩短design部分纵向间距，从18%间隔改为12%，平衡视觉密度】
   const designItemsConfig = [
     { width: 210, top: '0%', left: '2%', rotate: -8 },
     { width: 240, top: '12%', left: '15%', rotate: 5 },
@@ -240,18 +240,18 @@ const App = () => {
 
   const getDesignImg = (i) => {
     const list = [
-      "https://picui.ogmua.cn/s1/2026/03/30/69ca4335d3d7f.webp",
-       
+       "https://picui.ogmua.cn/s1/2026/03/30/69ca42ffed39f.webp",
       "https://picui.ogmua.cn/s1/2026/03/30/69ca4301a0ec1.webp",
       "https://picui.ogmua.cn/s1/2026/03/30/69ca432be993e.webp",
       "https://picui.ogmua.cn/s1/2026/03/30/69ca4334eb61f.webp",
       "https://picui.ogmua.cn/s1/2026/03/30/69ca4334e899b.webp",
-      "https://picui.ogmua.cn/s1/2026/03/30/69ca42ffed39f.webp",
+      "https://picui.ogmua.cn/s1/2026/03/30/69ca4335d3d7f.webp",
       "https://picui.ogmua.cn/s1/2026/03/30/69ca43676425a.webp",
       "https://picui.ogmua.cn/s1/2026/03/30/69ca4372ce8b6.webp"
     ];
     return list[i % list.length];
   };
+
   // 阻止长按菜单的通用处理
   const preventLongPressMenu = (e) => {
     e.preventDefault();
@@ -347,7 +347,7 @@ const App = () => {
         .hero-quote p.main { font-size: clamp(1rem,4vw,1.5rem); font-weight:900; font-style:italic; color:#fff; line-height:1.3; margin-bottom:1rem; }
         .hero-quote p.sub { font-size:10px; color:rgba(255,255,255,0.4); letter-spacing:0.2em; line-height:1.6; }
         
-        /* 主理人区域居左距离优化 */
+        /* 【修改1：主理人区域居左距离减少，调整padding+grid布局+对齐方式】 */
         .master-section {
           padding:6rem 3%; display:grid; grid-template-columns:1fr; gap:4rem; align-items:start; justify-items: start;
         }
@@ -374,7 +374,7 @@ const App = () => {
         .pink-particle { position:absolute; background:var(--accent-pink); border-radius:50%; filter:blur(2px); box-shadow:0 0 10px var(--accent-pink); }
         .master-tag {
           position:absolute; bottom:3rem; right:-1rem; background:var(--accent-pink); color:#000;
-          padding:0.5rem 1rem; font-weight:900; font-size:clamp(1.5rem,4vw,2.5rem); font-style:italic; transform:rotate(-2deg); z-index:10;
+          padding:0.5rem 1rem; font-weight:900; font-size:clamp(1.5rem,4vw,2.5rem); font-style:italic; transform:rotate(-3deg); z-index:10;
         }
         .tag-list {
           position:absolute; z-index:20; bottom:18%; left:0; width:auto; display:flex;
@@ -382,7 +382,7 @@ const App = () => {
         }
         .tag-item {
           font-size:16px; font-weight:900; color:#fff; padding:0.5rem 0.6rem; padding-left:0.2rem; margin:0;
-          border-left:none; background:linear-gradient(to right,rgba(0,0,0,1),rgba(0,0,0,0.01));
+          border-left:none; background:linear-gradient(to right,rgba(0,0,0,0.1),rgba(0,0,0,0.7));
           white-space:nowrap; max-width:100%;
         }
         .apparel-section { padding:8rem 0; background:#fff; color:#000; overflow:hidden; }
@@ -414,7 +414,7 @@ const App = () => {
         .line { height:1px; flex:1; background:linear-gradient(90deg,transparent,var(--accent-pink)); }
         .scroll-gallery-container { display:flex; flex-direction:column; gap:3rem; width:100%; }
         
-        /* 画廊滚动配置 */
+        /* 画廊滚动配置，保留视差+无限拖拽双模式 */
         .scroll-track { display:flex; width:max-content; padding:0 5vw; }
         .drag-track { display:flex; gap:2.5rem; width:max-content; cursor:grab; }
         .drag-track:active { cursor:grabbing; }
@@ -435,14 +435,11 @@ const App = () => {
           user-select: none;
         }
         .scroll-item:hover img { filter:grayscale(0) brightness(1.2); transform:scale(1.05); }
-        
-        /* 【修改2：去除design背景遮罩，统一背景】 */
-        .design-section { padding:12rem 5%; background: transparent; }
+        .design-section { padding:12rem 5%; background:rgba(10,10,10,0.8); }
         @media (min-width:1024px) { .design-section { padding:12rem 10%; } }
+        /* 【修改3：适配缩短后的纵向间距，降低容器最小高度】 */
         .design-irregular-container { position:relative; width:100%; min-height:130vh; margin-top:4rem; }
-        
-        /* 【修改2：去除connect和design之间的横边框】 */
-        footer { padding:6rem 5% 4rem; border-top: none; background: transparent; }
+        footer { padding:6rem 5% 4rem; border-top:1px solid rgba(255,20,147,0.3); background:#000; }
         @media (min-width:1024px) { footer { padding:10rem 10% 4rem; } }
         .wechat-hero-btn {
           position:relative; display:block; width:100%; max-width:600px; margin:0 auto 4rem;
@@ -617,18 +614,18 @@ const App = () => {
             <Scissors color="#FF1493" size={40} />
           </div>
           <div className="scroll-gallery-container">
-            {/* 【修改1：限制拖拽范围，拖到最后一张即停止，不再无限】 */}
+            {/* 【修改2：保留下滑自动视差+手动无限拖拽，双模式兼容】 */}
             
-            {/* 第一行：正向流 + 下滑左移视差 */}
+            {/* 第一行：正向无限流 + 下滑左移视差 */}
             <motion.div className="scroll-track" style={{ x: moveLeft, willChange: "transform" }}>
               <motion.div 
                 drag="x" 
-                dragConstraints={{ left: -2500, right: 0 }} // 限制范围，防止拖出屏幕
-                dragElastic={0} // 取消弹性，到边界即停
+                dragConstraints={{ left: -8000, right: 2000 }}
+                dragElastic={0.1}
                 dragMomentum={true}
                 className="drag-track"
               >
-                {[1,2,3,4,5,6,7,8].map((i, idx) => (
+                {[...[1,2,3,4,5,6,7,8], ...[1,2,3,4,5,6,7,8]].map((i, idx) => (
                   <div key={`t1-${idx}`} className="scroll-item">
                     <img 
                       src={getBodyArtImg(i)} 
@@ -642,16 +639,16 @@ const App = () => {
               </motion.div>
             </motion.div>
 
-            {/* 第二行：反向流 + 下滑居中视差 */}
+            {/* 第二行：反向无限流 + 下滑居中视差 */}
             <motion.div className="scroll-track" style={{ x: moveCenter, willChange: "transform" }}>
               <motion.div 
                 drag="x" 
-                dragConstraints={{ left: -2500, right: 0 }}
-                dragElastic={0}
+                dragConstraints={{ left: -8000, right: 2000 }}
+                dragElastic={0.1}
                 dragMomentum={true}
                 className="drag-track"
               >
-                {[8,7,6,5,4,3,2,1].map((i, idx) => (
+                {[...[8,7,6,5,4,3,2,1], ...[8,7,6,5,4,3,2,1]].map((i, idx) => (
                   <div key={`t2-${idx}`} className="scroll-item">
                     <img 
                       src={getBodyArtImg(i)} 
@@ -665,16 +662,16 @@ const App = () => {
               </motion.div>
             </motion.div>
 
-            {/* 第三行：乱序流 + 下滑右移视差 */}
+            {/* 第三行：乱序无限流 + 下滑右移视差 */}
             <motion.div className="scroll-track" style={{ x: moveRight, willChange: "transform" }}>
               <motion.div 
                 drag="x" 
-                dragConstraints={{ left: -2500, right: 0 }}
-                dragElastic={0}
+                dragConstraints={{ left: -8000, right: 2000 }}
+                dragElastic={0.1}
                 dragMomentum={true}
                 className="drag-track"
               >
-                {[1,3,5,7,2,4,6,8].map((i, idx) => (
+                {[...[1,3,5,7,2,4,6,8], ...[1,3,5,7,2,4,6,8]].map((i, idx) => (
                   <div key={`t3-${idx}`} className="scroll-item">
                     <img 
                       src={getBodyArtImg(i)} 
