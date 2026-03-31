@@ -1,12 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
-import { Skull, Menu, X, ShoppingBag, Scissors, Palette, MessageCircle, Share2, QrCode, Camera } from 'lucide-react';
+import { Skull, Menu, X, ShoppingBag, Scissors, Palette, MessageCircle, Share2, QrCode } from 'lucide-react';
 
 const noiseSvg = `data:image/svg+xml;utf8,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)"/%3E%3C/svg%3E`;
 
-// 纯CSS渲染的高清金属质感铁链SVG（自带粉色荧光环境反射）
-const chainSvg = "data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='40' viewBox='0 0 100 40'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='0%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23ffffff'/%3E%3Cstop offset='20%25' stop-color='%23999999'/%3E%3Cstop offset='50%25' stop-color='%23444444'/%3E%3Cstop offset='80%25' stop-color='%23999999'/%3E%3Cstop offset='100%25' stop-color='%23222222'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cg fill='none' stroke='url(%23g)'%3E%3Crect x='-20' y='5' width='60' height='30' rx='15' stroke-width='8'/%3E%3Crect x='25' y='10' width='50' height='20' rx='10' stroke-width='6'/%3E%3Crect x='60' y='5' width='60' height='30' rx='15' stroke-width='8'/%3E%3C/g%3E%3C/svg%3E";
-
+// ✅ 完全修复：Three.js 只在浏览器运行，绝不参与构建
 const Metallic3DScene = () => {
   const mountRef = useRef(null);
   const [canRun, setCanRun] = useState(false);
@@ -111,16 +109,6 @@ const App = () => {
   const tagScale = (opacity) => useTransform(opacity, o => 0.8 + o * 0.2);
   const tagRotate = (opacity) => useTransform(opacity, o => (1 - o) * -2 + 'deg');
 
-  // 新增：铁链交叉特效的 Ref 与 Scroll 控制
-  const chainRef = useRef(null);
-  const { scrollYProgress: chainProgress } = useScroll({
-    target: chainRef, offset: ["start end", "end start"]
-  });
-  const chain1X = useTransform(chainProgress, [0, 1], ['-20%', '20%']);
-  const chain2X = useTransform(chainProgress, [0, 1], ['10%', '-30%']);
-  const chain3X = useTransform(chainProgress, [0, 1], ['-30%', '10%']);
-  const chain4X = useTransform(chainProgress, [0, 1], ['30%', '-20%']);
-
   const designRef = useRef(null);
   const { scrollYProgress: designProgress } = useScroll({
     target: designRef, offset: ["start 60%", "end 40%"]
@@ -155,7 +143,7 @@ const App = () => {
       apparelSub: "EXHIBITION",
       apparelStation: "VISUAL ARCHIVE",
       apparelDrop: "NO_SALES // JUST_PAIN",
-      bodyArtTitle: "FLESH\nARTWORKS",
+      bodyArtTitle: "FLESH_\nARTWORKS",
       bodyArtMotto: "PAIN_IS_TRUTH // THE ONLY REALITY",
       designTitle: "VISUAL",
       designSub: "STATIC_DECAY",
@@ -204,19 +192,19 @@ const App = () => {
     return () => window.removeEventListener('mousemove', move);
   }, []);
 
-  // 已修改：比例缩小至50%，且向左收拢（大幅度降低 left 百分比）
   const designItemsConfig = [
-    { width: 210, top: '5%', left: '2%', rotate: -8 },
-    { width: 240, top: '2%', left: '15%', rotate: 5 },
-    { width: 180, top: '10%', left: '30%', rotate: -3 },
-    { width: 225, top: '35%', left: '5%', rotate: 6 },
-    { width: 195, top: '30%', left: '20%', rotate: -5 },
-    { width: 165, top: '45%', left: '35%', rotate: 2 },
-    { width: 217, top: '60%', left: '3%', rotate: -4 },
-    { width: 187, top: '55%', left: '18%', rotate: 7 },
-    { width: 232, top: '65%', left: '32%', rotate: -2 },
+    { width: 420, top: '5%', left: '5%', rotate: -8 },
+    { width: 480, top: '2%', left: '35%', rotate: 5 },
+    { width: 360, top: '10%', left: '70%', rotate: -3 },
+    { width: 450, top: '35%', left: '12%', rotate: 6 },
+    { width: 390, top: '30%', left: '50%', rotate: -5 },
+    { width: 330, top: '45%', left: '80%', rotate: 2 },
+    { width: 435, top: '60%', left: '8%', rotate: -4 },
+    { width: 375, top: '55%', left: '42%', rotate: 7 },
+    { width: 465, top: '65%', left: '65%', rotate: -2 },
   ];
 
+  // ✅ 已全部替换为你的真实图片链接
   const getMasterImg = () => 'https://picui.ogmua.cn/s1/2026/03/30/69ca4377e4dd7.webp';
 
   const getApparelImg = (i) => {
@@ -306,6 +294,7 @@ const App = () => {
         }
         @keyframes laser-move { to { background-position: 200% center; } }
         
+        /* 鼠标样式，在移动端自动去除并恢复默认响应 */
         .cursor-dot {
           position: fixed; width: 6px; height: 6px; background: #fff; border-radius: 50%;
           transform: translate(-50%, -50%); pointer-events: none; z-index: 500; mix-blend-mode: difference;
@@ -361,10 +350,10 @@ const App = () => {
           border:1px solid rgba(255,255,255,0.1); backdrop-filter:blur(10px); position:relative; overflow:hidden;
         }
         
-        /* 已修改：主理人照片宽度固定为 95% */
+        /* 修复主理人照片移动端宽度：固定为 80% */
         .master-portrait {
           aspect-ratio:3/4; border:1px solid rgba(255,20,147,0.4); position:relative;
-          width: 95%; margin:0 auto;
+          width: 80%; max-width:600px; margin:0 auto;
         }
         
         .master-portrait img { width:100%; height:100%; object-fit:cover; object-position:center; }
@@ -410,18 +399,13 @@ const App = () => {
         @media (min-width:768px) { .bodyart-header { padding:0 10%; gap:1.5rem; } }
         .line { height:1px; flex:1; background:linear-gradient(90deg,transparent,var(--accent-pink)); }
         .scroll-gallery-container { display:flex; flex-direction:column; gap:3rem; width:100%; }
-        
-        /* 修改画廊滚动 CSS 配置，支持拖拽双持 */
-        .scroll-track { display:flex; width:max-content; padding:0 5vw; }
-        .drag-track { display:flex; gap:2.5rem; width:max-content; cursor:grab; }
-        .drag-track:active { cursor:grabbing; }
-        
+        .scroll-track { display:flex; gap:2.5rem; width:max-content; padding:0 5vw; }
         .scroll-item {
           width:280px; height:380px; flex-shrink:0; border:1px solid rgba(255,255,255,0.15);
           overflow:hidden; position:relative;
         }
         @media (min-width:768px) { .scroll-item { width:420px; height:520px; } }
-        .scroll-item img { width:100%; height:100%; object-fit:cover; filter:grayscale(1) brightness(0.6); transition:0.5s; pointer-events: none; }
+        .scroll-item img { width:100%; height:100%; object-fit:cover; filter:grayscale(1) brightness(0.6); transition:0.5s; }
         .scroll-item:hover img { filter:grayscale(0) brightness(1.2); transform:scale(1.05); }
         .design-section { padding:12rem 5%; background:rgba(10,10,10,0.8); }
         @media (min-width:1024px) { .design-section { padding:12rem 10%; } }
@@ -563,16 +547,6 @@ const App = () => {
           </div>
         </section>
 
-        {/* 新增：铁链交互穿梭区域特效 */}
-        <section id="transition-chains" ref={chainRef} style={{ height: '200vh', position: 'relative', zIndex: 40, background: 'rgba(0,0,0,0)' }}>
-          <div style={{ position: 'sticky', top: 0, height: '100vh', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <motion.div style={{ x: chain1X, position: 'absolute', width: '300vw', height: '100px', backgroundImage: `url("${chainSvg}")`, backgroundRepeat: 'repeat-x', backgroundSize: 'contain', rotate: 15, opacity: 0.9, filter: 'drop-shadow(0 0 10px rgba(255,20,147,0.5))' }} />
-            <motion.div style={{ x: chain2X, position: 'absolute', width: '300vw', height: '150px', backgroundImage: `url("${chainSvg}")`, backgroundRepeat: 'repeat-x', backgroundSize: 'contain', rotate: -25, opacity: 0.8, filter: 'drop-shadow(0 0 15px rgba(255,20,147,0.7))' }} />
-            <motion.div style={{ x: chain3X, position: 'absolute', width: '300vw', height: '80px', backgroundImage: `url("${chainSvg}")`, backgroundRepeat: 'repeat-x', backgroundSize: 'contain', rotate: 5, opacity: 0.6, filter: 'drop-shadow(0 0 5px rgba(255,20,147,0.4))' }} />
-            <motion.div style={{ x: chain4X, position: 'absolute', width: '300vw', height: '120px', backgroundImage: `url("${chainSvg}")`, backgroundRepeat: 'repeat-x', backgroundSize: 'contain', rotate: -10, opacity: 0.85, filter: 'drop-shadow(0 0 20px rgba(255,20,147,0.8))' }} />
-          </div>
-        </section>
-
         <section id="apparel" className="apparel-section">
           <div className="apparel-header">
             <h2 className="apparel-title font-syne">
@@ -593,6 +567,7 @@ const App = () => {
                   src={getApparelImg(i)}
                   alt={`Apparel ${i}`}
                   className="apparel-img"
+                  // 添加 willChange: "transform" 解决移动端动画卡顿
                   style={{ y: i%2===0 ? apparelY1 : apparelY2, scale:1.25, willChange: "transform" }}
                 />
                 <div className="apparel-overlay">
@@ -606,41 +581,36 @@ const App = () => {
 
         <section id="bodyart" className="bodyart-section">
           <div className="bodyart-header">
+            {/* 增加了 whiteSpace 与 wordBreak 控制两行显示 */}
             <h2 className="font-syne laser-text uppercase" style={{ fontSize:'clamp(3rem,8vw,6rem)', fontWeight:900, fontStyle:'italic', margin:0, whiteSpace: 'pre-wrap', wordBreak: 'break-word', lineHeight: 0.9 }}>{t.bodyArtTitle}</h2>
             <div className="line"></div>
             <Scissors color="#FF1493" size={40} />
           </div>
           <div className="scroll-gallery-container">
-            {/* 已修改：嵌套结构支持自动视差跟随与自由滑动的双重手感 */}
+            {/* 添加 willChange: "transform" 强制 GPU 渲染优化移动端卡顿 */}
             <motion.div className="scroll-track" style={{ x: moveLeft, willChange: "transform" }}>
-              <motion.div drag="x" dragConstraints={{ left: -3000, right: 3000 }} className="drag-track">
-                {[1,2,3,4,5,6,7,8].map(i => (
-                  <div key={`t1-${i}`} className="scroll-item">
-                    <img src={getBodyArtImg(i)} alt="Body Mod" />
-                    <div style={{ position:'absolute', top:10, left:10, fontSize:'10px', background:'var(--accent-pink)', color:'#000', padding:'2px 6px', fontWeight:900 }}>MOD_{i}</div>
-                  </div>
-                ))}
-              </motion.div>
+              {[1,2,3,4,5,6,7,8].map(i => (
+                <div key={`t1-${i}`} className="scroll-item">
+                  <img src={getBodyArtImg(i)} alt="Body Mod" />
+                  <div style={{ position:'absolute', top:10, left:10, fontSize:'10px', background:'var(--accent-pink)', color:'#000', padding:'2px 6px', fontWeight:900 }}>MOD_{i}</div>
+                </div>
+              ))}
             </motion.div>
             <motion.div className="scroll-track" style={{ x: moveCenter, willChange: "transform" }}>
-              <motion.div drag="x" dragConstraints={{ left: -3000, right: 3000 }} className="drag-track">
-                {[8,7,6,5,4,3,2,1].map(i => (
-                  <div key={`t2-${i}`} className="scroll-item">
-                    <img src={getBodyArtImg(i)} alt="Body Mod" />
-                    <div style={{ position:'absolute', top:10, right:10, fontSize:'10px', border:'1px solid var(--accent-pink)', color:'#fff', padding:'2px 6px', fontWeight:900, background:'rgba(0,0,0,0.5)' }}>FLESH_{i}</div>
-                  </div>
-                ))}
-              </motion.div>
+              {[8,7,6,5,4,3,2,1].map(i => (
+                <div key={`t2-${i}`} className="scroll-item">
+                  <img src={getBodyArtImg(i)} alt="Body Mod" />
+                  <div style={{ position:'absolute', top:10, right:10, fontSize:'10px', border:'1px solid var(--accent-pink)', color:'#fff', padding:'2px 6px', fontWeight:900, background:'rgba(0,0,0,0.5)' }}>FLESH_{i}</div>
+                </div>
+              ))}
             </motion.div>
             <motion.div className="scroll-track" style={{ x: moveRight, willChange: "transform" }}>
-              <motion.div drag="x" dragConstraints={{ left: -3000, right: 3000 }} className="drag-track">
-                {[1,3,5,7,2,4,6,8].map(i => (
-                  <div key={`t3-${i}`} className="scroll-item">
-                    <img src={getBodyArtImg(i)} alt="Body Mod" />
-                    <div style={{ position:'absolute', bottom:10, left:10, fontSize:'10px', background:'#000', color:'var(--accent-pink)', padding:'2px 6px', fontWeight:900, border:'1px solid var(--accent-pink)' }}>ART_{i}</div>
-                  </div>
-                ))}
-              </motion.div>
+              {[1,3,5,7,2,4,6,8].map(i => (
+                <div key={`t3-${i}`} className="scroll-item">
+                  <img src={getBodyArtImg(i)} alt="Body Mod" />
+                  <div style={{ position:'absolute', bottom:10, left:10, fontSize:'10px', background:'#000', color:'var(--accent-pink)', padding:'2px 6px', fontWeight:900, border:'1px solid var(--accent-pink)' }}>ART_{i}</div>
+                </div>
+              ))}
             </motion.div>
           </div>
           <p style={{ marginTop:'6rem', textAlign:'center', color:'rgba(255,20,147,0.6)', fontSize:'14px', letterSpacing:'0.5em', fontWeight:900 }}>{t.bodyArtMotto}</p>
@@ -663,7 +633,8 @@ const App = () => {
                   key={i}
                   style={{
                     position:'absolute',
-                    width:`${item.width}px`,
+                    // 在移动端缩放至原先的 50%
+                    width: isMobile ? `${item.width * 0.5}px` : `${item.width}px`,
                     top:item.top,
                     left:item.left,
                     rotate:`${item.rotate}deg`,
@@ -703,6 +674,7 @@ const App = () => {
 
         <footer id="contact">
           <div style={{ textAlign:'center', marginBottom:'4rem' }}>
+            {/* 增加 wordBreak: break-word 防止爆出屏幕横向滚动 */}
             <h2 className="font-syne laser-text uppercase" style={{ fontSize:'clamp(3rem,8vw,5rem)', fontWeight:900, wordBreak: 'break-word' }}>{t.contactTitle}</h2>
             <p style={{ color:'rgba(255,255,255,0.4)', letterSpacing:'0.4em', fontSize:'12px', marginTop:'1rem', fontWeight:900 }}>// {t.contactSub}</p>
           </div>
@@ -714,11 +686,11 @@ const App = () => {
             </div>
           </a>
 
-          {/* <div className="social-matrix">
+          <div className="social-matrix">
             <a href="#" target="_blank" rel="noreferrer" className="social-btn">
               <Share2 className="social-icon" />
               <span className="social-text">XIAOHONGSHU</span>
-              <span className="social-sub">@彫七刺青&人彘娃娃Records</span>
+              <span className="social-sub">{lang === 'en' ? 'RED (小红书)' : '人彘娃娃_Official'}</span>
             </a>
             <a href="#" target="_blank" rel="noreferrer" className="social-btn">
               <MessageCircle className="social-icon" />
@@ -728,44 +700,9 @@ const App = () => {
             <a href="#" target="_blank" rel="noreferrer" className="social-btn">
               <MessageCircle className="social-icon" />
               <span className="social-text">WEIBO</span>
-              <span className="social-sub">@彫七刺青Meiousei</span>
+              <span className="social-sub">{lang === 'en' ? 'WEIBO (微博)' : '@人彘娃娃_Records'}</span>
             </a>
-          </div> */}
-
-          <div className="social-matrix">
-
-  <a 
-    href="https://www.xiaohongshu.com/user/profile/58d57ad250c4b45bd6b2409d?xsec_token=ABa18T2EvuDSoSwKOPftx8S4n-4_cFFXurd4iA8STbB_Y%3D&xsec_source=pc_search" 
-    target="_blank" 
-    rel="noreferrer" 
-    className="social-btn"
-  >
-    <Share2 className="social-icon" />
-    <span className="social-text">XIAOHONGSHU</span>
-    <span className="social-sub">@彫七刺青&人彘娃娃Records</span>
-  </a>
-  <a 
-    href="#" 
-    target="_blank" 
-    rel="noreferrer" 
-    className="social-btn"
-  >
-    <Camera className="social-icon" /> 
-    <span className="social-text">INSTAGRAM</span>
-    <span className="social-sub">@decapitated_doll</span>
-  </a>
-
-  <a 
-    href="https://weibo.com/u/3535364641" 
-    target="_blank" 
-    rel="noreferrer" 
-    className="social-btn"
-  >
-    <MessageCircle className="social-icon" />
-    <span className="social-text">WEIBO</span>
-    <span className="social-sub">@彫七刺青Meiousei</span>
-  </a>
-</div>
+          </div>
 
           <div style={{
             marginTop:'6rem',
