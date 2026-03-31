@@ -83,9 +83,6 @@ const App = () => {
   const [isMobile, setIsMobile] = useState(false);
 
   const { scrollYProgress } = useScroll();
-  const moveLeft = useTransform(scrollYProgress, [0, 1], ['0%', '-80%']);
-  const moveRight = useTransform(scrollYProgress, [0, 1], ['-80%', '0%']);
-  const moveCenter = useTransform(scrollYProgress, [0, 1], ['-40%', '-40%']);
   const apparelY1 = useTransform(scrollYProgress, [0, 1], ['-15%', '15%']);
   const apparelY2 = useTransform(scrollYProgress, [0, 1], ['15%', '-15%']);
 
@@ -191,17 +188,17 @@ const App = () => {
     return () => window.removeEventListener('mousemove', move);
   }, []);
 
-  // 已修改：拉长纵向距离
+  // 修改：大幅拉长纵向间距 (top 值)
   const designItemsConfig = [
-    { width: 210, top: '10%', left: '2%', rotate: -8 },
-    { width: 240, top: '5%', left: '15%', rotate: 5 },
-    { width: 180, top: '20%', left: '30%', rotate: -3 },
-    { width: 225, top: '50%', left: '5%', rotate: 6 },
-    { width: 195, top: '45%', left: '20%', rotate: -5 },
-    { width: 165, top: '60%', left: '35%', rotate: 2 },
-    { width: 217, top: '75%', left: '3%', rotate: -4 },
-    { width: 187, top: '70%', left: '18%', rotate: 7 },
-    { width: 232, top: '80%', left: '32%', rotate: -2 },
+    { width: 210, top: '0%', left: '2%', rotate: -8 },
+    { width: 240, top: '18%', left: '15%', rotate: 5 },
+    { width: 180, top: '36%', left: '30%', rotate: -3 },
+    { width: 225, top: '54%', left: '5%', rotate: 6 },
+    { width: 195, top: '72%', left: '20%', rotate: -5 },
+    { width: 165, top: '90%', left: '35%', rotate: 2 },
+    { width: 217, top: '108%', left: '3%', rotate: -4 },
+    { width: 187, top: '126%', left: '18%', rotate: 7 },
+    { width: 232, top: '144%', left: '32%', rotate: -2 },
   ];
 
   const getMasterImg = () => 'https://picui.ogmua.cn/s1/2026/03/30/69ca4377e4dd7.webp';
@@ -251,12 +248,11 @@ const App = () => {
     return list[i % list.length];
   };
 
-  // 无限滑动的图片数组（复制两份实现无缝循环）
-  const infiniteApparelItems = Array.from({ length: 24 }).map((_, i) => ({
-    id: i,
-    src: getApparelImg(i % 10),
-    index: i % 12
-  }));
+  // 辅助：阻止长按菜单的通用处理
+  const preventLongPressMenu = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
 
   return (
     <div className="main-container">
@@ -382,31 +378,10 @@ const App = () => {
         .apparel-title { font-size:clamp(3rem,10vw,8rem); line-height:0.9; font-weight:900; text-transform:uppercase; }
         .text-stroke-pink { -webkit-text-stroke:1px #000; color:transparent; }
         @media (min-width:768px) { .text-stroke-pink { -webkit-text-stroke:2px #000; } }
-        
-        /* 已修改：无限横向滑动画廊 */
-        .apparel-gallery { 
-          display: flex; 
-          gap: 2px; 
-          background: #000; 
-          overflow-x: auto; 
-          scroll-behavior: smooth;
-          scrollbar-width: none;
-          -ms-overflow-style: none;
-        }
-        .apparel-gallery::-webkit-scrollbar { display: none; }
-        
-        .apparel-item { 
-          aspect-ratio:3/4; 
-          position:relative; 
-          overflow:hidden; 
-          background:#111; 
-          cursor:crosshair; 
-          flex-shrink: 0;
-          width: 300px;
-        }
-        @media (min-width:768px) { .apparel-item { width: 400px; } }
-        @media (min-width:1024px) { .apparel-item { width: 500px; } }
-        
+        .apparel-gallery { display:grid; grid-template-columns:repeat(2,1fr); gap:2px; background:#000; }
+        @media (min-width:768px) { .apparel-gallery { grid-template-columns:repeat(3,1fr); } }
+        @media (min-width:1024px) { .apparel-gallery { grid-template-columns:repeat(4,1fr); } }
+        .apparel-item { aspect-ratio:3/4; position:relative; overflow:hidden; background:#111; cursor:crosshair; }
         .apparel-img {
           width:100%; height:100%; object-fit:cover; transition:transform 0.6s cubic-bezier(0.25,1,0.5,1);
           filter:grayscale(0.5) contrast(0.6) saturate(0.4);
@@ -436,11 +411,20 @@ const App = () => {
           overflow:hidden; position:relative;
         }
         @media (min-width:768px) { .scroll-item { width:420px; height:520px; } }
-        .scroll-item img { width:100%; height:100%; object-fit:cover; filter:grayscale(1) brightness(0.6); transition:0.5s; pointer-events: none; }
+        
+        /* 修改：禁止长按触发系统菜单 (微信) */
+        .scroll-item img { 
+          width:100%; height:100%; object-fit:cover; 
+          filter:grayscale(1) brightness(0.6); transition:0.5s; 
+          pointer-events: auto;
+          -webkit-touch-callout: none; /* iOS */
+          -webkit-user-select: none;
+          user-select: none;
+        }
         .scroll-item:hover img { filter:grayscale(0) brightness(1.2); transform:scale(1.05); }
         .design-section { padding:12rem 5%; background:rgba(10,10,10,0.8); }
         @media (min-width:1024px) { .design-section { padding:12rem 10%; } }
-        .design-irregular-container { position:relative; width:100%; min-height:140vh; margin-top:4rem; }
+        .design-irregular-container { position:relative; width:100%; min-height:180vh; margin-top:4rem; } /* 增加高度以适应更长的布局 */
         footer { padding:6rem 5% 4rem; border-top:1px solid rgba(255,20,147,0.3); background:#000; }
         @media (min-width:1024px) { footer { padding:10rem 10% 4rem; } }
         .wechat-hero-btn {
@@ -482,17 +466,6 @@ const App = () => {
         }
         .mobile-menu a { color:#fff; text-decoration:none; text-transform:uppercase; }
         .mobile-menu a:hover,.mobile-menu a:active { color:var(--accent-pink); }
-
-        /* 禁止长按图片触发系统菜单 */
-        img {
-          -webkit-touch-callout: none;
-          -webkit-user-select: none;
-          -khtml-user-select: none;
-          -moz-user-select: none;
-          -ms-user-select: none;
-          user-select: none;
-          pointer-events: auto;
-        }
       `}</style>
 
       <div className="noise-overlay" />
@@ -589,6 +562,8 @@ const App = () => {
           </div>
         </section>
 
+        {/* 锁链特效已完全移除 */}
+
         <section id="apparel" className="apparel-section">
           <div className="apparel-header">
             <h2 className="apparel-title font-syne">
@@ -603,17 +578,17 @@ const App = () => {
             </div>
           </div>
           <div className="apparel-gallery">
-            {infiniteApparelItems.map((item) => (
-              <div key={item.id} className="apparel-item">
+            {Array.from({ length:12 }).map((_, i) => (
+              <div key={i} className="apparel-item">
                 <motion.img
-                  src={item.src}
-                  alt={`Apparel ${item.index}`}
+                  src={getApparelImg(i)}
+                  alt={`Apparel ${i}`}
                   className="apparel-img"
-                  style={{ y: item.index % 2 === 0 ? apparelY1 : apparelY2, scale:1.25, willChange: "transform" }}
+                  style={{ y: i%2===0 ? apparelY1 : apparelY2, scale:1.25, willChange: "transform" }}
                 />
                 <div className="apparel-overlay">
-                  <div className="apparel-id">ARCHIVE_ID_{String(item.index + 1).padStart(3,'0')}</div>
-                  <div className="apparel-glitch-text">{lang === 'en' ? `SYMBIOTE_${item.index + 1}` : `共生体_构型_${item.index + 1}`}</div>
+                  <div className="apparel-id">ARCHIVE_ID_{String(i+1).padStart(3,'0')}</div>
+                  <div className="apparel-glitch-text">{lang === 'en' ? `SYMBIOTE_${i+1}` : `共生体_构型_${i+1}`}</div>
                 </div>
               </div>
             ))}
@@ -627,37 +602,73 @@ const App = () => {
             <Scissors color="#FF1493" size={40} />
           </div>
           <div className="scroll-gallery-container">
-            {/* 已修改：嵌套结构支持自动视差跟随与自由滑动的双重手感 */}
-            <motion.div className="scroll-track" style={{ x: moveLeft, willChange: "transform" }}>
-              <motion.div drag="x" dragConstraints={{ left: -3000, right: 3000 }} className="drag-track">
-                {[1,2,3,4,5,6,7,8].map(i => (
-                  <div key={`t1-${i}`} className="scroll-item">
-                    <img src={getBodyArtImg(i)} alt="Body Mod" />
+            {/* 修改：三重独立无限横向滑动画廊 (移除视差绑定，增加拖拽自由度) */}
+            
+            {/* 第一行：正向无限流 */}
+            <div className="scroll-track">
+              <motion.div 
+                drag="x" 
+                dragConstraints={{ left: -6000, right: 0 }} // 扩大约束范围实现“无限”感
+                dragElastic={0.2}
+                className="drag-track"
+              >
+                {[...[1,2,3,4,5,6,7,8], ...[1,2,3,4,5,6,7,8]].map((i, idx) => (
+                  <div key={`t1-${idx}`} className="scroll-item">
+                    <img 
+                      src={getBodyArtImg(i)} 
+                      alt="Body Mod" 
+                      onContextMenu={preventLongPressMenu}
+                      onTouchStart={(e) => e.preventDefault()} // 激进阻止长按
+                    />
                     <div style={{ position:'absolute', top:10, left:10, fontSize:'10px', background:'var(--accent-pink)', color:'#000', padding:'2px 6px', fontWeight:900 }}>MOD_{i}</div>
                   </div>
                 ))}
               </motion.div>
-            </motion.div>
-            <motion.div className="scroll-track" style={{ x: moveCenter, willChange: "transform" }}>
-              <motion.div drag="x" dragConstraints={{ left: -3000, right: 3000 }} className="drag-track">
-                {[8,7,6,5,4,3,2,1].map(i => (
-                  <div key={`t2-${i}`} className="scroll-item">
-                    <img src={getBodyArtImg(i)} alt="Body Mod" />
+            </div>
+
+            {/* 第二行：反向无限流 */}
+            <div className="scroll-track">
+              <motion.div 
+                drag="x" 
+                dragConstraints={{ left: -6000, right: 0 }}
+                dragElastic={0.2}
+                className="drag-track"
+              >
+                {[...[8,7,6,5,4,3,2,1], ...[8,7,6,5,4,3,2,1]].map((i, idx) => (
+                  <div key={`t2-${idx}`} className="scroll-item">
+                    <img 
+                      src={getBodyArtImg(i)} 
+                      alt="Body Mod" 
+                      onContextMenu={preventLongPressMenu}
+                      onTouchStart={(e) => e.preventDefault()}
+                    />
                     <div style={{ position:'absolute', top:10, right:10, fontSize:'10px', border:'1px solid var(--accent-pink)', color:'#fff', padding:'2px 6px', fontWeight:900, background:'rgba(0,0,0,0.5)' }}>FLESH_{i}</div>
                   </div>
                 ))}
               </motion.div>
-            </motion.div>
-            <motion.div className="scroll-track" style={{ x: moveRight, willChange: "transform" }}>
-              <motion.div drag="x" dragConstraints={{ left: -3000, right: 3000 }} className="drag-track">
-                {[1,3,5,7,2,4,6,8].map(i => (
-                  <div key={`t3-${i}`} className="scroll-item">
-                    <img src={getBodyArtImg(i)} alt="Body Mod" />
+            </div>
+
+            {/* 第三行：乱序无限流 */}
+            <div className="scroll-track">
+              <motion.div 
+                drag="x" 
+                dragConstraints={{ left: -6000, right: 0 }}
+                dragElastic={0.2}
+                className="drag-track"
+              >
+                {[...[1,3,5,7,2,4,6,8], ...[1,3,5,7,2,4,6,8]].map((i, idx) => (
+                  <div key={`t3-${idx}`} className="scroll-item">
+                    <img 
+                      src={getBodyArtImg(i)} 
+                      alt="Body Mod" 
+                      onContextMenu={preventLongPressMenu}
+                      onTouchStart={(e) => e.preventDefault()}
+                    />
                     <div style={{ position:'absolute', bottom:10, left:10, fontSize:'10px', background:'#000', color:'var(--accent-pink)', padding:'2px 6px', fontWeight:900, border:'1px solid var(--accent-pink)' }}>ART_{i}</div>
                   </div>
                 ))}
               </motion.div>
-            </motion.div>
+            </div>
           </div>
           <p style={{ marginTop:'6rem', textAlign:'center', color:'rgba(255,20,147,0.6)', fontSize:'14px', letterSpacing:'0.5em', fontWeight:900 }}>{t.bodyArtMotto}</p>
         </section>
@@ -699,7 +710,11 @@ const App = () => {
                       filter:'grayscale(0.8) brightness(0.7)',
                       border:'1px solid rgba(255,255,255,0.05)',
                       transition:'all 0.5s ease',
+                      pointerEvents: 'auto',
+                      WebkitTouchCallout: 'none',
+                      userSelect: 'none',
                     }}
+                    onContextMenu={preventLongPressMenu}
                     onMouseEnter={(e) => {
                       e.target.style.filter = 'grayscale(0) brightness(1.2)';
                       e.target.style.borderColor = 'var(--accent-pink)';
