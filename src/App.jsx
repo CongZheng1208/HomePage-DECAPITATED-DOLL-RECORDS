@@ -137,7 +137,7 @@ const App = () => {
       ],
       masterTitle: "OPERATOR ARCHIVE",
       masterDesc1: "This is DECAPITATED DOLL, a visual anomaly struggling at the edge of biomech and industrial noise.",
-      masterDesc2: "Dedicated since 2018 to exploring the symbiosis of flesh and metal. From taboo skin-cutting to cold-hard design, each piece is a violent deconstruction of mediocre aesthetics.",
+      masterDesc2: "Dedicated since 2013 to exploring the symbiosis of flesh and metal. From taboo skin-cutting to cold-hard design, each piece is a violent deconstruction of mediocre aesthetics.",
       masterRole2: "BIO-MODS / DESIGN",
       apparelTitle: "APPAREL",
       apparelSub: "EXHIBITION",
@@ -377,7 +377,7 @@ const App = () => {
           padding:0.5rem 1rem; font-weight:900; font-size:clamp(1.5rem,4vw,2.5rem); font-style:italic; transform:rotate(-2deg); z-index:10;
         }
         .tag-list {
-          position:absolute; z-index:20; bottom:18%; left:0; width:auto; display:flex;
+          position:absolute; z-index:20; bottom:8%; left:0; width:auto; display:flex;
           flex-direction:column; gap:0.4rem; padding:0; margin:0;
         }
         .tag-item {
