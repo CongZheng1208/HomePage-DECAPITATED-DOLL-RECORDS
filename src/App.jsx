@@ -622,7 +622,7 @@ const App = () => {
             <motion.div className="scroll-track" style={{ x: moveLeft, willChange: "transform" }}>
               <motion.div 
                 drag="x" 
-                dragConstraints={{ left: -500, right: 0 }} // 限制范围，防止拖出屏幕
+                dragConstraints={{ left: -1000, right: 0 }} // 限制范围，防止拖出屏幕
                 dragElastic={0} // 取消弹性，到边界即停
                 dragMomentum={true}
                 className="drag-track"
@@ -645,7 +645,7 @@ const App = () => {
             <motion.div className="scroll-track" style={{ x: moveCenter, willChange: "transform" }}>
               <motion.div 
                 drag="x" 
-                dragConstraints={{ left: -2500, right: 0 }}
+                dragConstraints={{ left: -1000, right: 0 }}
                 dragElastic={0}
                 dragMomentum={true}
                 className="drag-track"
@@ -668,7 +668,7 @@ const App = () => {
             <motion.div className="scroll-track" style={{ x: moveRight, willChange: "transform" }}>
               <motion.div 
                 drag="x" 
-                dragConstraints={{ left: -2500, right: 0 }}
+                dragConstraints={{ left: -1000, right: 0 }}
                 dragElastic={0}
                 dragMomentum={true}
                 className="drag-track"
@@ -774,14 +774,14 @@ const App = () => {
               <span className="social-sub">@彫七刺青&人彘娃娃Records</span>
             </a>
             <a 
-              href="#" 
+              href="https://www.instagram.com/horinana_tattoo?igsh=aWF5YW8zaTdndHRv&utm_source=qr" 
               target="_blank" 
               rel="noreferrer" 
               className="social-btn"
             >
               <Camera className="social-icon" /> 
               <span className="social-text">INSTAGRAM</span>
-              <span className="social-sub">@decapitated_doll</span>
+              <span className="social-sub">@horinana_tattoo</span>
             </a>
             <a 
               href="https://weibo.com/u/3535364641" 
