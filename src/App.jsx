@@ -229,7 +229,6 @@ const App = () => {
       "https://picui.ogmua.cn/s1/2026/03/30/69ca425e87a2c.webp",
       "https://picui.ogmua.cn/s1/2026/03/30/69ca426245739.webp",
       "https://picui.ogmua.cn/s1/2026/03/30/69ca425f5b031.webp",
-      "https://picui.ogmua.cn/s1/2026/03/30/69ca425f5b031.webp",
       "https://picui.ogmua.cn/s1/2026/03/30/69ca42fbb22d4.webp",
       "https://picui.ogmua.cn/s1/2026/03/30/69ca42fd5a58b.webp",
        "https://picui.ogmua.cn/s1/2026/03/30/69ca4301eb635.webp",
