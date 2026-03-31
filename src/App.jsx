@@ -143,11 +143,11 @@ const App = () => {
       apparelSub: "EXHIBITION",
       apparelStation: "VISUAL ARCHIVE",
       apparelDrop: "NO_SALES // JUST_PAIN",
-      bodyArtTitle: "FLESH_ARTWORKS",
+      bodyArtTitle: "FLESH_\nARTWORKS",
       bodyArtMotto: "PAIN_IS_TRUTH // THE ONLY REALITY",
       designTitle: "VISUAL",
       designSub: "STATIC_DECAY",
-      contactTitle: "CONNECT_LINK",
+      contactTitle: "CONNECT",
       contactSub: "SOCIAL MATRIX",
       copyright: "© MMXXIV DECAPITATED DOLL RECORDS // SYSTEM_ONLINE",
       tags: ["INT'L BRUTAL MERCH LABEL OWNER", "TATTOO ARTIST", "SCARIFICATION ARTIST", "GRAPHIC DESIGNER", "LARRY WANG MAINLAND MGR"]
@@ -173,11 +173,11 @@ const App = () => {
       apparelSub: "视觉展厅",
       apparelStation: "档案库",
       apparelDrop: "仅供展示 // 拒绝消费",
-      bodyArtTitle: "身体艺术作品",
+      bodyArtTitle: "身体\n艺术作品",
       bodyArtMotto: "疼痛是唯一的真实 // PAIN_IS_TRUTH",
       designTitle: "平面",
       designSub: "静态腐烂",
-      contactTitle: "神经链接",
+      contactTitle: "CONNECT",
       contactSub: "社交媒体矩阵",
       copyright: "© MMXXIV 人彘娃娃  RECORDS // 系统在线",
       tags: ["国际残酷周边厂牌主理人", "刺青师", "割皮师", "平面设计师", "LarryWang大陆经纪人"]
@@ -271,7 +271,9 @@ const App = () => {
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-track { background: var(--bg-black); }
         ::-webkit-scrollbar-thumb { background: var(--accent-pink); }
-        .main-container { min-height: 100vh; position: relative; }
+        
+        /* 防止整体横向滚动 */
+        .main-container { min-height: 100vh; position: relative; overflow-x: hidden; width: 100%; max-width: 100vw; }
         .font-syne { font-family: var(--syne); }
         .noise-overlay {
           position: fixed; inset: 0; pointer-events: none; z-index: 100; opacity: 0.12;
@@ -291,6 +293,8 @@ const App = () => {
           animation: laser-move 4s linear infinite; text-shadow: 0 0 20px rgba(255,20,147,0.5);
         }
         @keyframes laser-move { to { background-position: 200% center; } }
+        
+        /* 鼠标样式，在移动端自动去除并恢复默认响应 */
         .cursor-dot {
           position: fixed; width: 6px; height: 6px; background: #fff; border-radius: 50%;
           transform: translate(-50%, -50%); pointer-events: none; z-index: 500; mix-blend-mode: difference;
@@ -301,6 +305,11 @@ const App = () => {
           box-shadow: 0 0 10px rgba(255,20,147,0.4); transition: width 0.2s, height 0.2s;
         }
         a:hover ~ .cursor-cross, button:hover ~ .cursor-cross { width: 60px; height: 60px; background: rgba(255,20,147,0.15); }
+        @media (max-width: 768px) {
+          body { cursor: auto; }
+          .cursor-dot, .cursor-cross { display: none !important; }
+        }
+
         header {
           position: fixed; top: 0; left: 0; width: 100%; z-index: 300;
           border-bottom: 1px solid rgba(255,255,255,0.05); padding: 1.5rem 2rem;
@@ -340,10 +349,13 @@ const App = () => {
           background:linear-gradient(135deg,rgba(255,255,255,0.03) 0%,rgba(255,255,255,0) 100%);
           border:1px solid rgba(255,255,255,0.1); backdrop-filter:blur(10px); position:relative; overflow:hidden;
         }
+        
+        /* 修复主理人照片移动端宽度：固定为 80% */
         .master-portrait {
           aspect-ratio:3/4; border:1px solid rgba(255,20,147,0.4); position:relative;
-          min-width:480px; min-height:640px; width:100%; max-width:600px; margin:0 auto;
+          width: 80%; max-width:600px; margin:0 auto;
         }
+        
         .master-portrait img { width:100%; height:100%; object-fit:cover; object-position:center; }
         .pink-particle { position:absolute; background:var(--accent-pink); border-radius:50%; filter:blur(2px); box-shadow:0 0 10px var(--accent-pink); }
         .master-tag {
@@ -555,7 +567,8 @@ const App = () => {
                   src={getApparelImg(i)}
                   alt={`Apparel ${i}`}
                   className="apparel-img"
-                  style={{ y: i%2===0 ? apparelY1 : apparelY2, scale:1.25 }}
+                  // 添加 willChange: "transform" 解决移动端动画卡顿
+                  style={{ y: i%2===0 ? apparelY1 : apparelY2, scale:1.25, willChange: "transform" }}
                 />
                 <div className="apparel-overlay">
                   <div className="apparel-id">ARCHIVE_ID_{String(i+1).padStart(3,'0')}</div>
@@ -568,12 +581,14 @@ const App = () => {
 
         <section id="bodyart" className="bodyart-section">
           <div className="bodyart-header">
-            <h2 className="font-syne laser-text uppercase" style={{ fontSize:'clamp(3rem,8vw,6rem)', fontWeight:900, fontStyle:'italic', margin:0 }}>{t.bodyArtTitle}</h2>
+            {/* 增加了 whiteSpace 与 wordBreak 控制两行显示 */}
+            <h2 className="font-syne laser-text uppercase" style={{ fontSize:'clamp(3rem,8vw,6rem)', fontWeight:900, fontStyle:'italic', margin:0, whiteSpace: 'pre-wrap', wordBreak: 'break-word', lineHeight: 0.9 }}>{t.bodyArtTitle}</h2>
             <div className="line"></div>
             <Scissors color="#FF1493" size={40} />
           </div>
           <div className="scroll-gallery-container">
-            <motion.div className="scroll-track" style={{ x: moveLeft }}>
+            {/* 添加 willChange: "transform" 强制 GPU 渲染优化移动端卡顿 */}
+            <motion.div className="scroll-track" style={{ x: moveLeft, willChange: "transform" }}>
               {[1,2,3,4,5,6,7,8].map(i => (
                 <div key={`t1-${i}`} className="scroll-item">
                   <img src={getBodyArtImg(i)} alt="Body Mod" />
@@ -581,7 +596,7 @@ const App = () => {
                 </div>
               ))}
             </motion.div>
-            <motion.div className="scroll-track" style={{ x: moveCenter }}>
+            <motion.div className="scroll-track" style={{ x: moveCenter, willChange: "transform" }}>
               {[8,7,6,5,4,3,2,1].map(i => (
                 <div key={`t2-${i}`} className="scroll-item">
                   <img src={getBodyArtImg(i)} alt="Body Mod" />
@@ -589,7 +604,7 @@ const App = () => {
                 </div>
               ))}
             </motion.div>
-            <motion.div className="scroll-track" style={{ x: moveRight }}>
+            <motion.div className="scroll-track" style={{ x: moveRight, willChange: "transform" }}>
               {[1,3,5,7,2,4,6,8].map(i => (
                 <div key={`t3-${i}`} className="scroll-item">
                   <img src={getBodyArtImg(i)} alt="Body Mod" />
@@ -618,7 +633,8 @@ const App = () => {
                   key={i}
                   style={{
                     position:'absolute',
-                    width:`${item.width}px`,
+                    // 在移动端缩放至原先的 50%
+                    width: isMobile ? `${item.width * 0.5}px` : `${item.width}px`,
                     top:item.top,
                     left:item.left,
                     rotate:`${item.rotate}deg`,
@@ -658,7 +674,8 @@ const App = () => {
 
         <footer id="contact">
           <div style={{ textAlign:'center', marginBottom:'4rem' }}>
-            <h2 className="font-syne laser-text uppercase" style={{ fontSize:'clamp(3rem,8vw,5rem)', fontWeight:900 }}>{t.contactTitle}</h2>
+            {/* 增加 wordBreak: break-word 防止爆出屏幕横向滚动 */}
+            <h2 className="font-syne laser-text uppercase" style={{ fontSize:'clamp(3rem,8vw,5rem)', fontWeight:900, wordBreak: 'break-word' }}>{t.contactTitle}</h2>
             <p style={{ color:'rgba(255,255,255,0.4)', letterSpacing:'0.4em', fontSize:'12px', marginTop:'1rem', fontWeight:900 }}>// {t.contactSub}</p>
           </div>
 
