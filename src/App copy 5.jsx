@@ -4,6 +4,9 @@ import { Skull, Menu, X, ShoppingBag, Scissors, Palette, MessageCircle, Share2, 
 
 const noiseSvg = `data:image/svg+xml;utf8,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)"/%3E%3C/svg%3E`;
 
+// 纯CSS渲染的高清金属质感铁链SVG（自带粉色荧光环境反射）
+const chainSvg = "data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='40' viewBox='0 0 100 40'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='0%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23ffffff'/%3E%3Cstop offset='20%25' stop-color='%23999999'/%3E%3Cstop offset='50%25' stop-color='%23444444'/%3E%3Cstop offset='80%25' stop-color='%23999999'/%3E%3Cstop offset='100%25' stop-color='%23222222'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cg fill='none' stroke='url(%23g)'%3E%3Crect x='-20' y='5' width='60' height='30' rx='15' stroke-width='8'/%3E%3Crect x='25' y='10' width='50' height='20' rx='10' stroke-width='6'/%3E%3Crect x='60' y='5' width='60' height='30' rx='15' stroke-width='8'/%3E%3C/g%3E%3C/svg%3E";
+
 const Metallic3DScene = () => {
   const mountRef = useRef(null);
   const [canRun, setCanRun] = useState(false);
@@ -108,6 +111,16 @@ const App = () => {
   const tagScale = (opacity) => useTransform(opacity, o => 0.8 + o * 0.2);
   const tagRotate = (opacity) => useTransform(opacity, o => (1 - o) * -2 + 'deg');
 
+  // 新增：铁链交叉特效的 Ref 与 Scroll 控制
+  const chainRef = useRef(null);
+  const { scrollYProgress: chainProgress } = useScroll({
+    target: chainRef, offset: ["start end", "end start"]
+  });
+  const chain1X = useTransform(chainProgress, [0, 1], ['-20%', '20%']);
+  const chain2X = useTransform(chainProgress, [0, 1], ['10%', '-30%']);
+  const chain3X = useTransform(chainProgress, [0, 1], ['-30%', '10%']);
+  const chain4X = useTransform(chainProgress, [0, 1], ['30%', '-20%']);
+
   const designRef = useRef(null);
   const { scrollYProgress: designProgress } = useScroll({
     target: designRef, offset: ["start 60%", "end 40%"]
@@ -191,17 +204,17 @@ const App = () => {
     return () => window.removeEventListener('mousemove', move);
   }, []);
 
-  // 已修改：拉长纵向距离
+  // 已修改：比例缩小至50%，且向左收拢（大幅度降低 left 百分比）
   const designItemsConfig = [
-    { width: 210, top: '10%', left: '2%', rotate: -8 },
-    { width: 240, top: '5%', left: '15%', rotate: 5 },
-    { width: 180, top: '20%', left: '30%', rotate: -3 },
-    { width: 225, top: '50%', left: '5%', rotate: 6 },
-    { width: 195, top: '45%', left: '20%', rotate: -5 },
-    { width: 165, top: '60%', left: '35%', rotate: 2 },
-    { width: 217, top: '75%', left: '3%', rotate: -4 },
-    { width: 187, top: '70%', left: '18%', rotate: 7 },
-    { width: 232, top: '80%', left: '32%', rotate: -2 },
+    { width: 210, top: '5%', left: '2%', rotate: -8 },
+    { width: 240, top: '2%', left: '15%', rotate: 5 },
+    { width: 180, top: '10%', left: '30%', rotate: -3 },
+    { width: 225, top: '35%', left: '5%', rotate: 6 },
+    { width: 195, top: '30%', left: '20%', rotate: -5 },
+    { width: 165, top: '45%', left: '35%', rotate: 2 },
+    { width: 217, top: '60%', left: '3%', rotate: -4 },
+    { width: 187, top: '55%', left: '18%', rotate: 7 },
+    { width: 232, top: '65%', left: '32%', rotate: -2 },
   ];
 
   const getMasterImg = () => 'https://picui.ogmua.cn/s1/2026/03/30/69ca4377e4dd7.webp';
@@ -239,7 +252,6 @@ const App = () => {
   const getDesignImg = (i) => {
     const list = [
       "https://picui.ogmua.cn/s1/2026/03/30/69ca4301a0ec1.webp",
-      "https://picui.ogmua.cn/s1/2026/03/30/69ca4301eb635.webp",
       "https://picui.ogmua.cn/s1/2026/03/30/69ca432be993e.webp",
       "https://picui.ogmua.cn/s1/2026/03/30/69ca432be993e.webp",
       "https://picui.ogmua.cn/s1/2026/03/30/69ca4334eb61f.webp",
@@ -250,13 +262,6 @@ const App = () => {
     ];
     return list[i % list.length];
   };
-
-  // 无限滑动的图片数组（复制两份实现无缝循环）
-  const infiniteApparelItems = Array.from({ length: 24 }).map((_, i) => ({
-    id: i,
-    src: getApparelImg(i % 10),
-    index: i % 12
-  }));
 
   return (
     <div className="main-container">
@@ -382,31 +387,10 @@ const App = () => {
         .apparel-title { font-size:clamp(3rem,10vw,8rem); line-height:0.9; font-weight:900; text-transform:uppercase; }
         .text-stroke-pink { -webkit-text-stroke:1px #000; color:transparent; }
         @media (min-width:768px) { .text-stroke-pink { -webkit-text-stroke:2px #000; } }
-        
-        /* 已修改：无限横向滑动画廊 */
-        .apparel-gallery { 
-          display: flex; 
-          gap: 2px; 
-          background: #000; 
-          overflow-x: auto; 
-          scroll-behavior: smooth;
-          scrollbar-width: none;
-          -ms-overflow-style: none;
-        }
-        .apparel-gallery::-webkit-scrollbar { display: none; }
-        
-        .apparel-item { 
-          aspect-ratio:3/4; 
-          position:relative; 
-          overflow:hidden; 
-          background:#111; 
-          cursor:crosshair; 
-          flex-shrink: 0;
-          width: 300px;
-        }
-        @media (min-width:768px) { .apparel-item { width: 400px; } }
-        @media (min-width:1024px) { .apparel-item { width: 500px; } }
-        
+        .apparel-gallery { display:grid; grid-template-columns:repeat(2,1fr); gap:2px; background:#000; }
+        @media (min-width:768px) { .apparel-gallery { grid-template-columns:repeat(3,1fr); } }
+        @media (min-width:1024px) { .apparel-gallery { grid-template-columns:repeat(4,1fr); } }
+        .apparel-item { aspect-ratio:3/4; position:relative; overflow:hidden; background:#111; cursor:crosshair; }
         .apparel-img {
           width:100%; height:100%; object-fit:cover; transition:transform 0.6s cubic-bezier(0.25,1,0.5,1);
           filter:grayscale(0.5) contrast(0.6) saturate(0.4);
@@ -482,17 +466,6 @@ const App = () => {
         }
         .mobile-menu a { color:#fff; text-decoration:none; text-transform:uppercase; }
         .mobile-menu a:hover,.mobile-menu a:active { color:var(--accent-pink); }
-
-        /* 禁止长按图片触发系统菜单 */
-        img {
-          -webkit-touch-callout: none;
-          -webkit-user-select: none;
-          -khtml-user-select: none;
-          -moz-user-select: none;
-          -ms-user-select: none;
-          user-select: none;
-          pointer-events: auto;
-        }
       `}</style>
 
       <div className="noise-overlay" />
@@ -589,6 +562,16 @@ const App = () => {
           </div>
         </section>
 
+        {/* 新增：铁链交互穿梭区域特效 */}
+        <section id="transition-chains" ref={chainRef} style={{ height: '200vh', position: 'relative', zIndex: 40, background: 'rgba(0,0,0,0)' }}>
+          <div style={{ position: 'sticky', top: 0, height: '100vh', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <motion.div style={{ x: chain1X, position: 'absolute', width: '300vw', height: '100px', backgroundImage: `url("${chainSvg}")`, backgroundRepeat: 'repeat-x', backgroundSize: 'contain', rotate: 15, opacity: 0.9, filter: 'drop-shadow(0 0 10px rgba(255,20,147,0.5))' }} />
+            <motion.div style={{ x: chain2X, position: 'absolute', width: '300vw', height: '150px', backgroundImage: `url("${chainSvg}")`, backgroundRepeat: 'repeat-x', backgroundSize: 'contain', rotate: -25, opacity: 0.8, filter: 'drop-shadow(0 0 15px rgba(255,20,147,0.7))' }} />
+            <motion.div style={{ x: chain3X, position: 'absolute', width: '300vw', height: '80px', backgroundImage: `url("${chainSvg}")`, backgroundRepeat: 'repeat-x', backgroundSize: 'contain', rotate: 5, opacity: 0.6, filter: 'drop-shadow(0 0 5px rgba(255,20,147,0.4))' }} />
+            <motion.div style={{ x: chain4X, position: 'absolute', width: '300vw', height: '120px', backgroundImage: `url("${chainSvg}")`, backgroundRepeat: 'repeat-x', backgroundSize: 'contain', rotate: -10, opacity: 0.85, filter: 'drop-shadow(0 0 20px rgba(255,20,147,0.8))' }} />
+          </div>
+        </section>
+
         <section id="apparel" className="apparel-section">
           <div className="apparel-header">
             <h2 className="apparel-title font-syne">
@@ -603,17 +586,17 @@ const App = () => {
             </div>
           </div>
           <div className="apparel-gallery">
-            {infiniteApparelItems.map((item) => (
-              <div key={item.id} className="apparel-item">
+            {Array.from({ length:12 }).map((_, i) => (
+              <div key={i} className="apparel-item">
                 <motion.img
-                  src={item.src}
-                  alt={`Apparel ${item.index}`}
+                  src={getApparelImg(i)}
+                  alt={`Apparel ${i}`}
                   className="apparel-img"
-                  style={{ y: item.index % 2 === 0 ? apparelY1 : apparelY2, scale:1.25, willChange: "transform" }}
+                  style={{ y: i%2===0 ? apparelY1 : apparelY2, scale:1.25, willChange: "transform" }}
                 />
                 <div className="apparel-overlay">
-                  <div className="apparel-id">ARCHIVE_ID_{String(item.index + 1).padStart(3,'0')}</div>
-                  <div className="apparel-glitch-text">{lang === 'en' ? `SYMBIOTE_${item.index + 1}` : `共生体_构型_${item.index + 1}`}</div>
+                  <div className="apparel-id">ARCHIVE_ID_{String(i+1).padStart(3,'0')}</div>
+                  <div className="apparel-glitch-text">{lang === 'en' ? `SYMBIOTE_${i+1}` : `共生体_构型_${i+1}`}</div>
                 </div>
               </div>
             ))}
