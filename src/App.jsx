@@ -142,7 +142,7 @@ const App = () => {
       apparelTitle: "APPAREL",
       apparelSub: "EXHIBITION",
       apparelStation: "VISUAL ARCHIVE",
-      apparelDrop: "NO_SALES // JUST_PAIN",
+      apparelDrop: "FOR_SALE // JUST_PAIN",
       bodyArtTitle: "FLESH\nARTWORKS",
       bodyArtMotto: "PAIN_IS_TRUTH // THE ONLY REALITY",
       designTitle: "VISUAL",
