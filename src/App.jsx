@@ -622,7 +622,7 @@ const App = () => {
             <motion.div className="scroll-track" style={{ x: moveLeft, willChange: "transform" }}>
               <motion.div 
                 drag="x" 
-                dragConstraints={{ left: -2500, right: 0 }} // 限制范围，防止拖出屏幕
+                dragConstraints={{ left: -500, right: 0 }} // 限制范围，防止拖出屏幕
                 dragElastic={0} // 取消弹性，到边界即停
                 dragMomentum={true}
                 className="drag-track"
