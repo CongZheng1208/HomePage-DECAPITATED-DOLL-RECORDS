@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
-import { Skull, Menu, X, ShoppingBag, Scissors, Palette, MessageCircle, Share2, QrCode, Camera, Unlock } from 'lucide-react';
+import { Skull, Menu, X, ShoppingBag, Scissors, Palette, MessageCircle, Share2, QrCode, Camera } from 'lucide-react';
 
 const noiseSvg = `data:image/svg+xml;utf8,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)"/%3E%3C/svg%3E`;
 
@@ -76,114 +76,13 @@ const Metallic3DScene = () => {
   return <div ref={mountRef} className="three-background" />;
 };
 
-// 服饰库 (56张图)
-const APPAREL_IMAGES_LIST = Array.from(new Set([
-  "https://picui.ogmua.cn/s1/2026/03/30/69ca43b331b95.webp",
-  "https://picui.ogmua.cn/s1/2026/03/30/69ca43bd2c56a.webp",
-  "https://picui.ogmua.cn/s1/2026/03/30/69ca43bf405e5.webp",
-  "https://picui.ogmua.cn/s1/2026/03/30/69ca43c23190d.webp",
-  "https://picui.ogmua.cn/s1/2026/03/30/69ca43c94f6b0.webp",
-  "https://picui.ogmua.cn/s1/2026/03/30/69ca440712b66.webp",
-  "https://picui.ogmua.cn/s1/2026/03/30/69ca44113e4e5.webp",
-  "https://picui.ogmua.cn/s1/2026/03/30/69ca4414195df.webp",
-  "https://picui.ogmua.cn/s1/2026/03/30/69ca4416a36bf.webp",
-  "https://picui.ogmua.cn/s1/2026/03/30/69ca442062745.webp",
-  "https://picui.ogmua.cn/s1/2026/03/30/69ca43745c9c0.webp",
-  "https://picui.ogmua.cn/s1/2026/04/01/69ccde419ceb0.webp",
-  "https://picui.ogmua.cn/s1/2026/03/30/69ca43752685a.webp",
-  "https://picui.ogmua.cn/s1/2026/04/01/69ccde446fead.webp",
-  "https://picui.ogmua.cn/s1/2026/04/01/69ccde5656ecc.webp",
-  "https://picui.ogmua.cn/s1/2026/04/01/69ccde56d3839.webp",
-  "https://picui.ogmua.cn/s1/2026/04/01/69ccde573f57d.webp",
-  "https://picui.ogmua.cn/s1/2026/04/01/69ccde5796dea.webp",
-  "https://picui.ogmua.cn/s1/2026/04/01/69ccde734a3d8.webp",
-  "https://picui.ogmua.cn/s1/2026/04/01/69ccde7545abb.webp",
-  "https://picui.ogmua.cn/s1/2026/04/01/69ccde7576956.webp",
-  "https://picui.ogmua.cn/s1/2026/04/01/69ccde766f2e6.webp",
-  "https://picui.ogmua.cn/s1/2026/04/01/69ccde7715b40.webp",
-  "https://picui.ogmua.cn/s1/2026/04/01/69ccde8f23ad3.webp",
-  "https://picui.ogmua.cn/s1/2026/04/01/69ccde8ec7276.webp",
-  "https://picui.ogmua.cn/s1/2026/04/01/69ccde8f9e0a1.webp",
-  "https://picui.ogmua.cn/s1/2026/04/01/69ccde9adf2a3.webp",
-  "https://picui.ogmua.cn/s1/2026/04/01/69ccde9fd72db.webp",
-  "https://picui.ogmua.cn/s1/2026/04/01/69ccdea09913e.webp",
-  "https://picui.ogmua.cn/s1/2026/04/01/69ccdea0ef1f4.webp",
-  "https://picui.ogmua.cn/s1/2026/04/01/69ccdea11c171.webp",
-  "https://picui.ogmua.cn/s1/2026/04/01/69ccdea797b13.webp",
-  "https://picui.ogmua.cn/s1/2026/04/01/69ccdeb199791.webp",
-  "https://picui.ogmua.cn/s1/2026/04/01/69ccdeb498562.webp",
-  "https://picui.ogmua.cn/s1/2026/04/01/69ccdeb53e270.webp",
-  "https://picui.ogmua.cn/s1/2026/04/01/69ccdeb512913.webp",
-  "https://picui.ogmua.cn/s1/2026/04/01/69ccdebd699c0.webp",
-  "https://picui.ogmua.cn/s1/2026/04/01/69ccdec2cc96c.webp",
-  "https://picui.ogmua.cn/s1/2026/04/01/69ccdec6bb2b9.webp",
-  "https://picui.ogmua.cn/s1/2026/04/01/69ccdec8a329c.webp",
-  "https://picui.ogmua.cn/s1/2026/04/01/69ccdec93ebfa.webp",
-  "https://picui.ogmua.cn/s1/2026/04/01/69ccded2a4d30.webp",
-  "https://picui.ogmua.cn/s1/2026/04/01/69ccded8ca054.webp",
-  "https://picui.ogmua.cn/s1/2026/04/01/69ccdedc6b53b.webp",
-  "https://picui.ogmua.cn/s1/2026/04/01/69ccdedc9d4d7.webp",
-  "https://picui.ogmua.cn/s1/2026/04/01/69ccdedcc0760.webp",
-  "https://picui.ogmua.cn/s1/2026/04/01/69ccdedfc717e.webp",
-  "https://picui.ogmua.cn/s1/2026/04/01/69ccdee74a738.webp",
-  "https://picui.ogmua.cn/s1/2026/04/01/69ccdeec36887.webp",
-  "https://picui.ogmua.cn/s1/2026/04/01/69ccdeec9676b.webp"
-]));
-
-// 自定义动态加载图片组件，带有炫酷占位符
-const CyberImage = ({ src, alt, className, style, isMotion, motionProps, ...props }) => {
-  const [loaded, setLoaded] = useState(false);
-  const Img = isMotion ? motion.img : 'img';
-
-  return (
-    <>
-      <AnimatePresence>
-        {!loaded && (
-          <motion.div
-            initial={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.5 }}
-            className="cyber-loader"
-          >
-            <div className="scan-line"></div>
-            <span className="loader-text font-syne">SYS_LOADING...</span>
-          </motion.div>
-        )}
-      </AnimatePresence>
-      <Img
-        src={src}
-        alt={alt}
-        className={`${className || ''} ${loaded ? 'is-loaded' : 'is-loading'}`}
-        style={style}
-        onLoad={() => setLoaded(true)}
-        {...motionProps}
-        {...props}
-      />
-    </>
-  );
-};
-
 const App = () => {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [menuOpen, setMenuOpen] = useState(false);
   const [lang, setLang] = useState('en');
   const [isMobile, setIsMobile] = useState(false);
 
-  // Apparel 分页逻辑
-  const [apparelPage, setApparelPage] = useState(0);
-  const APPAREL_PER_PAGE = 12;
-  const totalApparelPages = Math.ceil(APPAREL_IMAGES_LIST.length / APPAREL_PER_PAGE);
-
-  const handleNextApparelPage = () => {
-    setApparelPage((prev) => (prev + 1) % totalApparelPages);
-    document.getElementById('apparel')?.scrollIntoView({ behavior: 'smooth' });
-  };
-
-  const currentApparelImages = APPAREL_IMAGES_LIST.slice(
-    apparelPage * APPAREL_PER_PAGE,
-    (apparelPage + 1) * APPAREL_PER_PAGE
-  );
-
+  // 保留下滑自动视差滑动
   const { scrollYProgress } = useScroll();
   const moveLeft = useTransform(scrollYProgress, [0, 1], ['0%', '-80%']);
   const moveRight = useTransform(scrollYProgress, [0, 1], ['-80%', '0%']);
@@ -244,7 +143,6 @@ const App = () => {
       apparelSub: "EXHIBITION",
       apparelStation: "VISUAL ARCHIVE",
       apparelDrop: "FOR_SALE // JUST_PAIN",
-      apparelLoadMore: "CLICK HERE\nTO UNLOCK MORE MERCH",
       bodyArtTitle: "FLESH\nARTWORKS",
       bodyArtMotto: "PAIN_IS_TRUTH // THE ONLY REALITY",
       designTitle: "VISUAL",
@@ -275,7 +173,6 @@ const App = () => {
       apparelSub: "视觉展厅",
       apparelStation: "档案库",
       apparelDrop: "仅供展示 // 拒绝消费",
-      apparelLoadMore: "CLICK HERE\nTO UNLOCK MORE MERCH",
       bodyArtTitle: "身体\n艺术作品",
       bodyArtMotto: "疼痛是唯一的真实 // PAIN_IS_TRUTH",
       designTitle: "平面",
@@ -295,6 +192,7 @@ const App = () => {
     return () => window.removeEventListener('mousemove', move);
   }, []);
 
+  // 保持design部分纵向间距
   const designItemsConfig = [
     { width: 210, top: '0%', left: '2%', rotate: -8 },
     { width: 240, top: '12%', left: '15%', rotate: 5 },
@@ -309,6 +207,22 @@ const App = () => {
 
   const getMasterImg = () => 'https://picui.ogmua.cn/s1/2026/03/30/69ca4377e4dd7.webp';
 
+  const getApparelImg = (i) => {
+    const list = [
+      "https://picui.ogmua.cn/s1/2026/03/30/69ca43b331b95.webp",
+      "https://picui.ogmua.cn/s1/2026/03/30/69ca43bd2c56a.webp",
+      "https://picui.ogmua.cn/s1/2026/03/30/69ca43bf405e5.webp",
+      "https://picui.ogmua.cn/s1/2026/03/30/69ca43c23190d.webp",
+      "https://picui.ogmua.cn/s1/2026/03/30/69ca43c94f6b0.webp",
+      "https://picui.ogmua.cn/s1/2026/03/30/69ca440712b66.webp",
+      "https://picui.ogmua.cn/s1/2026/03/30/69ca44113e4e5.webp",
+      "https://picui.ogmua.cn/s1/2026/03/30/69ca4414195df.webp",
+      "https://picui.ogmua.cn/s1/2026/03/30/69ca4416a36bf.webp",
+      "https://picui.ogmua.cn/s1/2026/03/30/69ca442062745.webp"
+    ];
+    return list[i % list.length];
+  };
+
   const getBodyArtImg = (i) => {
     const list = [
       "https://picui.ogmua.cn/s1/2026/03/30/69ca425d40eca.webp",
@@ -317,7 +231,8 @@ const App = () => {
       "https://picui.ogmua.cn/s1/2026/03/30/69ca425f5b031.webp",
       "https://picui.ogmua.cn/s1/2026/03/30/69ca42fbb22d4.webp",
       "https://picui.ogmua.cn/s1/2026/03/30/69ca42fd5a58b.webp",
-      "https://picui.ogmua.cn/s1/2026/03/30/69ca4301eb635.webp",
+       "https://picui.ogmua.cn/s1/2026/03/30/69ca4301eb635.webp",
+     
     ];
     return list[i % list.length];
   };
@@ -325,6 +240,7 @@ const App = () => {
   const getDesignImg = (i) => {
     const list = [
       "https://picui.ogmua.cn/s1/2026/03/30/69ca4335d3d7f.webp",
+       
       "https://picui.ogmua.cn/s1/2026/03/30/69ca4301a0ec1.webp",
       "https://picui.ogmua.cn/s1/2026/03/30/69ca432be993e.webp",
       "https://picui.ogmua.cn/s1/2026/03/30/69ca4334eb61f.webp",
@@ -335,7 +251,7 @@ const App = () => {
     ];
     return list[i % list.length];
   };
-
+  // 阻止长按菜单的通用处理
   const preventLongPressMenu = (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -361,6 +277,7 @@ const App = () => {
         ::-webkit-scrollbar-track { background: var(--bg-black); }
         ::-webkit-scrollbar-thumb { background: var(--accent-pink); }
         
+        /* 防止整体横向滚动 */
         .main-container { min-height: 100vh; position: relative; overflow-x: hidden; width: 100%; max-width: 100vw; }
         .font-syne { font-family: var(--syne); }
         .noise-overlay {
@@ -397,33 +314,6 @@ const App = () => {
           .cursor-dot, .cursor-cross { display: none !important; }
         }
 
-        /* ----- Image Loading System & Animations ----- */
-        .is-loading { opacity: 0 !important; }
-        .is-loaded { opacity: 1; }
-        
-        .cyber-loader {
-          position: absolute; inset: 0; background: rgba(5,5,5,0.9);
-          display: flex; align-items: center; justify-content: center;
-          z-index: 5; overflow: hidden;
-        }
-        .cyber-loader .scan-line {
-          position: absolute; top: 0; left: 0; width: 100%; height: 2px;
-          background: var(--accent-pink); box-shadow: 0 0 15px var(--accent-pink);
-          animation: scan-vertical 1.8s linear infinite; opacity: 0.5;
-        }
-        .cyber-loader .loader-text {
-          color: var(--accent-pink); font-size: 10px; font-weight: 900; letter-spacing: 0.2em;
-          animation: text-glitch-pulse 1s infinite alternate;
-        }
-        @keyframes scan-vertical {
-          0% { top: -10%; }
-          100% { top: 110%; }
-        }
-        @keyframes text-glitch-pulse {
-          0% { opacity: 0.3; text-shadow: none; }
-          100% { opacity: 1; text-shadow: 0 0 10px var(--accent-pink); }
-        }
-
         header {
           position: fixed; top: 0; left: 0; width: 100%; z-index: 300;
           border-bottom: 1px solid rgba(255,255,255,0.05); padding: 1.5rem 2rem;
@@ -456,6 +346,7 @@ const App = () => {
         .hero-quote p.main { font-size: clamp(1rem,4vw,1.5rem); font-weight:900; font-style:italic; color:#fff; line-height:1.3; margin-bottom:1rem; }
         .hero-quote p.sub { font-size:10px; color:rgba(255,255,255,0.4); letter-spacing:0.2em; line-height:1.6; }
         
+        /* 主理人区域居左距离优化 */
         .master-section {
           padding:6rem 3%; display:grid; grid-template-columns:1fr; gap:4rem; align-items:start; justify-items: start;
         }
@@ -478,10 +369,7 @@ const App = () => {
           width: 95%; margin:0;
         }
         
-        .master-portrait img { 
-          width:100%; height:100%; object-fit:cover; object-position:center;
-          transition: opacity 0.8s ease; 
-        }
+        .master-portrait img { width:100%; height:100%; object-fit:cover; object-position:center; }
         .pink-particle { position:absolute; background:var(--accent-pink); border-radius:50%; filter:blur(2px); box-shadow:0 0 10px var(--accent-pink); }
         .master-tag {
           position:absolute; bottom:3rem; right:-1rem; background:var(--accent-pink); color:#000;
@@ -496,7 +384,7 @@ const App = () => {
           border-left:none; background:linear-gradient(to right,rgba(0,0,0,1),rgba(0,0,0,0.01));
           white-space:nowrap; max-width:100%;
         }
-        .apparel-section { padding:8rem 0 10rem 0; background:#fff; color:#000; overflow:hidden; }
+        .apparel-section { padding:8rem 0; background:#fff; color:#000; overflow:hidden; }
         .apparel-header { padding:0 5%; margin-bottom:3rem; display:flex; flex-direction:column; gap:1rem; }
         @media (min-width:768px) { .apparel-header { padding:0 10%; flex-direction:row; justify-content:space-between; align-items:flex-end; margin-bottom:5rem; } }
         .apparel-title { font-size:clamp(3rem,10vw,8rem); line-height:0.9; font-weight:900; text-transform:uppercase; }
@@ -507,70 +395,25 @@ const App = () => {
         @media (min-width:1024px) { .apparel-gallery { grid-template-columns:repeat(4,1fr); } }
         .apparel-item { aspect-ratio:3/4; position:relative; overflow:hidden; background:#111; cursor:crosshair; }
         .apparel-img {
-          width:100%; height:100%; object-fit:cover; 
-          transition: transform 0.6s cubic-bezier(0.25,1,0.5,1), filter 0.6s, opacity 0.8s ease !important;
+          width:100%; height:100%; object-fit:cover; transition:transform 0.6s cubic-bezier(0.25,1,0.5,1);
           filter:grayscale(0.5) contrast(0.6) saturate(0.4);
         }
         .apparel-item:hover .apparel-img { transform:scale(1.08) !important; filter:grayscale(0) contrast(1) saturate(1); }
         .apparel-overlay {
           position:absolute; inset:0; background:rgba(255,20,147,0.1); opacity:0;
           display:flex; flex-direction:column; justify-content:space-between; padding:1.5rem;
-          transition:0.4s ease; border:2px solid transparent; pointer-events:none; z-index:10;
+          transition:0.4s ease; border:2px solid transparent; pointer-events:none;
         }
         .apparel-item:hover .apparel-overlay { opacity:1; border-color:var(--accent-pink); background:rgba(0,0,0,0.3); }
         .apparel-glitch-text { color:#fff; font-weight:900; font-size:clamp(1rem,2vw,1.5rem); font-style:italic; text-transform:uppercase; }
         .apparel-id { color:var(--accent-pink); font-size:10px; font-weight:900; }
-        
-        /* Revised Pagination Button Style */
-        .apparel-load-more {
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          gap: 0.8rem;
-          padding: 1rem 0;
-          margin-top: 6rem;
-          background: transparent;
-          border: none;
-          color: var(--accent-pink);
-          font-family: var(--syne);
-          font-size: clamp(1rem, 3vw, 1.5rem);
-          font-weight: 900;
-          letter-spacing: 0.15em;
-          cursor: pointer;
-          transition: 0.4s cubic-bezier(0.25, 1, 0.5, 1);
-          text-transform: uppercase;
-          position: relative;
-          text-shadow: 0 0 10px rgba(255,20,147,0.4);
-        }
-        .apparel-load-more::after {
-          content: '';
-          position: absolute;
-          bottom: -5px;
-          left: 50%;
-          transform: translateX(-50%);
-          width: 0%;
-          height: 2px;
-          background: var(--accent-pink);
-          transition: 0.4s cubic-bezier(0.25, 1, 0.5, 1);
-          box-shadow: 0 0 10px var(--accent-pink);
-        }
-        .apparel-load-more:hover {
-          color: #fff;
-          text-shadow: 0 0 20px var(--accent-pink);
-          transform: scale(1.05);
-        }
-        .apparel-load-more:hover::after {
-          width: 100%;
-          background: #fff;
-          box-shadow: 0 0 15px #fff;
-        }
-
         .bodyart-section { padding:10rem 0; background:rgba(5,5,5,0.6); overflow:hidden; }
         .bodyart-header { padding:0 5%; margin-bottom:6rem; display:flex; align-items:center; gap:1rem; }
         @media (min-width:768px) { .bodyart-header { padding:0 10%; gap:1.5rem; } }
         .line { height:1px; flex:1; background:linear-gradient(90deg,transparent,var(--accent-pink)); }
         .scroll-gallery-container { display:flex; flex-direction:column; gap:3rem; width:100%; }
         
+        /* 画廊滚动配置 */
         .scroll-track { display:flex; width:max-content; padding:0 5vw; }
         .drag-track { display:flex; gap:2.5rem; width:max-content; cursor:grab; }
         .drag-track:active { cursor:grabbing; }
@@ -581,21 +424,23 @@ const App = () => {
         }
         @media (min-width:768px) { .scroll-item { width:420px; height:520px; } }
         
+        /* 禁止长按触发微信系统菜单 */
         .scroll-item img { 
           width:100%; height:100%; object-fit:cover; 
-          filter:grayscale(1) brightness(0.6); 
-          transition: transform 0.5s, filter 0.5s, opacity 0.8s ease !important; 
+          filter:grayscale(1) brightness(0.6); transition:0.5s; 
           pointer-events: auto;
           -webkit-touch-callout: none;
           -webkit-user-select: none;
           user-select: none;
         }
-        .scroll-item:hover img { filter:grayscale(0) brightness(1.2); transform:scale(1.05) !important; }
+        .scroll-item:hover img { filter:grayscale(0) brightness(1.2); transform:scale(1.05); }
         
+        /* 【修改2：去除design背景遮罩，统一背景】 */
         .design-section { padding:12rem 5%; background: transparent; }
         @media (min-width:1024px) { .design-section { padding:12rem 10%; } }
         .design-irregular-container { position:relative; width:100%; min-height:130vh; margin-top:4rem; }
         
+        /* 【修改2：去除connect和design之间的横边框】 */
         footer { padding:6rem 5% 4rem; border-top: none; background: transparent; }
         @media (min-width:1024px) { footer { padding:10rem 10% 4rem; } }
         .wechat-hero-btn {
@@ -603,20 +448,16 @@ const App = () => {
           border:2px solid var(--accent-pink); overflow:hidden; border-radius:4px; transition:0.4s;
           box-shadow:0 0 20px rgba(255,20,147,0.2);
         }
-        .wechat-hero-btn img { 
-          width:100%; height:auto; display:block; 
-          transition: transform 0.5s, filter 0.5s, opacity 0.8s ease !important; 
-          opacity:0.8; filter:grayscale(0.5); 
-        }
+        .wechat-hero-btn img { width:100%; height:auto; display:block; transition:0.5s; opacity:0.8; filter:grayscale(0.5); }
         .wechat-overlay {
           position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
-          background:rgba(0,0,0,0.4); backdrop-filter:blur(4px); transition:0.5s; z-index: 10;
+          background:rgba(0,0,0,0.4); backdrop-filter:blur(4px); transition:0.5s;
         }
         .wechat-overlay span {
           font-family:var(--syne); font-size:clamp(2rem,5vw,3rem); font-weight:900;
           color:#fff; text-shadow:0 0 15px var(--accent-pink); letter-spacing:0.1em; margin-left:1.5rem;
         }
-        .wechat-hero-btn:hover img { transform:scale(1.05) !important; opacity:1 !important; filter:grayscale(0) !important; }
+        .wechat-hero-btn:hover img { transform:scale(1.05); opacity:1; filter:grayscale(0); }
         .wechat-hero-btn:hover .wechat-overlay { background:rgba(255,20,147,0.2); backdrop-filter:blur(0px); }
         .social-matrix { display:grid; grid-template-columns:1fr; gap:2rem; }
         @media (min-width:768px) { .social-matrix { grid-template-columns:repeat(3,1fr); } }
@@ -688,8 +529,7 @@ const App = () => {
 
         <section id="master" className="master-section" ref={masterRef}>
           <div className="chrome-card master-portrait">
-            <CyberImage
-              isMotion
+            <motion.img
               src={getMasterImg()}
               alt="Operator"
               style={{ filter: useTransform(masterBrightness, b => `brightness(${b}) grayscale(${1.2 - b})`) }}
@@ -752,33 +592,20 @@ const App = () => {
             </div>
           </div>
           <div className="apparel-gallery">
-            {currentApparelImages.map((src, i) => {
-              const globalIndex = apparelPage * APPAREL_PER_PAGE + i;
-              return (
-                <div key={globalIndex} className="apparel-item">
-                  <CyberImage
-                    isMotion
-                    src={src}
-                    alt={`Apparel ${globalIndex}`}
-                    className="apparel-img"
-                    style={{ y: i % 2 === 0 ? apparelY1 : apparelY2, scale: 1.25, willChange: "transform" }}
-                  />
-                  <div className="apparel-overlay">
-                    <div className="apparel-id">ARCHIVE_ID_{String(globalIndex + 1).padStart(3, '0')}</div>
-                    <div className="apparel-glitch-text">{lang === 'en' ? `SYMBIOTE_${globalIndex + 1}` : `共生体_构型_${globalIndex + 1}`}</div>
-                  </div>
+            {Array.from({ length:12 }).map((_, i) => (
+              <div key={i} className="apparel-item">
+                <motion.img
+                  src={getApparelImg(i)}
+                  alt={`Apparel ${i}`}
+                  className="apparel-img"
+                  style={{ y: i%2===0 ? apparelY1 : apparelY2, scale:1.25, willChange: "transform" }}
+                />
+                <div className="apparel-overlay">
+                  <div className="apparel-id">ARCHIVE_ID_{String(i+1).padStart(3,'0')}</div>
+                  <div className="apparel-glitch-text">{lang === 'en' ? `SYMBIOTE_${i+1}` : `共生体_构型_${i+1}`}</div>
                 </div>
-              );
-            })}
-          </div>
-          
-          <div style={{ display: 'flex', justifyContent: 'center', width: '100%', position: 'relative', zIndex: 10 }}>
-            
-            <button className="apparel-load-more" onClick={handleNextApparelPage}>
-               <Unlock size={20} />
-              {t.apparelLoadMore}
-              <Unlock size={20} />
-            </button>
+              </div>
+            ))}
           </div>
         </section>
 
@@ -789,28 +616,32 @@ const App = () => {
             <Scissors color="#FF1493" size={40} />
           </div>
           <div className="scroll-gallery-container">
+            {/* 【修改1：限制拖拽范围，拖到最后一张即停止，不再无限】 */}
+            
+            {/* 第一行：正向流 + 下滑左移视差 */}
             <motion.div className="scroll-track" style={{ x: moveLeft, willChange: "transform" }}>
               <motion.div 
                 drag="x" 
-                dragConstraints={{ left: -1000, right: 0 }}
-                dragElastic={0}
+                dragConstraints={{ left: -1000, right: 0 }} // 限制范围，防止拖出屏幕
+                dragElastic={0} // 取消弹性，到边界即停
                 dragMomentum={true}
                 className="drag-track"
               >
                 {[1,2,3,4,5,6,7,8].map((i, idx) => (
                   <div key={`t1-${idx}`} className="scroll-item">
-                    <CyberImage 
+                    <img 
                       src={getBodyArtImg(i)} 
                       alt="Body Mod" 
                       onContextMenu={preventLongPressMenu}
                       onTouchStart={(e) => e.preventDefault()}
                     />
-                    <div style={{ position:'absolute', top:10, left:10, fontSize:'10px', background:'var(--accent-pink)', color:'#000', padding:'2px 6px', fontWeight:900, zIndex: 10 }}>MOD_{i}</div>
+                    <div style={{ position:'absolute', top:10, left:10, fontSize:'10px', background:'var(--accent-pink)', color:'#000', padding:'2px 6px', fontWeight:900 }}>MOD_{i}</div>
                   </div>
                 ))}
               </motion.div>
             </motion.div>
 
+            {/* 第二行：反向流 + 下滑居中视差 */}
             <motion.div className="scroll-track" style={{ x: moveCenter, willChange: "transform" }}>
               <motion.div 
                 drag="x" 
@@ -821,18 +652,19 @@ const App = () => {
               >
                 {[8,7,6,5,4,3,2,1].map((i, idx) => (
                   <div key={`t2-${idx}`} className="scroll-item">
-                    <CyberImage 
+                    <img 
                       src={getBodyArtImg(i)} 
                       alt="Body Mod" 
                       onContextMenu={preventLongPressMenu}
                       onTouchStart={(e) => e.preventDefault()}
                     />
-                    <div style={{ position:'absolute', top:10, right:10, fontSize:'10px', border:'1px solid var(--accent-pink)', color:'#fff', padding:'2px 6px', fontWeight:900, background:'rgba(0,0,0,0.5)', zIndex: 10 }}>FLESH_{i}</div>
+                    <div style={{ position:'absolute', top:10, right:10, fontSize:'10px', border:'1px solid var(--accent-pink)', color:'#fff', padding:'2px 6px', fontWeight:900, background:'rgba(0,0,0,0.5)' }}>FLESH_{i}</div>
                   </div>
                 ))}
               </motion.div>
             </motion.div>
 
+            {/* 第三行：乱序流 + 下滑右移视差 */}
             <motion.div className="scroll-track" style={{ x: moveRight, willChange: "transform" }}>
               <motion.div 
                 drag="x" 
@@ -843,13 +675,13 @@ const App = () => {
               >
                 {[1,3,5,7,2,4,6,8].map((i, idx) => (
                   <div key={`t3-${idx}`} className="scroll-item">
-                    <CyberImage 
+                    <img 
                       src={getBodyArtImg(i)} 
                       alt="Body Mod" 
                       onContextMenu={preventLongPressMenu}
                       onTouchStart={(e) => e.preventDefault()}
                     />
-                    <div style={{ position:'absolute', bottom:10, left:10, fontSize:'10px', background:'#000', color:'var(--accent-pink)', padding:'2px 6px', fontWeight:900, border:'1px solid var(--accent-pink)', zIndex: 10 }}>ART_{i}</div>
+                    <div style={{ position:'absolute', bottom:10, left:10, fontSize:'10px', background:'#000', color:'var(--accent-pink)', padding:'2px 6px', fontWeight:900, border:'1px solid var(--accent-pink)' }}>ART_{i}</div>
                   </div>
                 ))}
               </motion.div>
@@ -886,7 +718,7 @@ const App = () => {
                   whileHover={{ scale:1.15, zIndex:50, rotate:0, transition:{duration:0.4} }}
                   className="design-item"
                 >
-                  <CyberImage
+                  <img
                     src={getDesignImg(i)}
                     alt={`DECAY_${i+1}`}
                     style={{
@@ -894,7 +726,7 @@ const App = () => {
                       height:'auto',
                       filter:'grayscale(0.8) brightness(0.7)',
                       border:'1px solid rgba(255,255,255,0.05)',
-                      transition:'all 0.5s ease, opacity 0.8s ease',
+                      transition:'all 0.5s ease',
                       pointerEvents: 'auto',
                       WebkitTouchCallout: 'none',
                       userSelect: 'none',
@@ -924,10 +756,7 @@ const App = () => {
           </div>
 
           <a href="https://picui.ogmua.cn/s1/2026/03/29/69c91d0c0003d.webp" target="_blank" rel="noreferrer" className="wechat-hero-btn">
-            <CyberImage 
-              src="https://picui.ogmua.cn/s1/2026/03/29/69c91d0c0003d.webp" 
-              alt="WeChat Business Card" 
-            />
+            <img src="https://picui.ogmua.cn/s1/2026/03/29/69c91d0c0003d.webp" alt="WeChat Business Card" />
             <div className="wechat-overlay">
               <span><QrCode size={48} style={{ display:'inline', marginRight:'1rem', marginBottom:'-0.5rem' }}/>CONNECT WECHAT</span>
             </div>
@@ -945,14 +774,14 @@ const App = () => {
               <span className="social-sub">@彫七刺青&人彘娃娃Records</span>
             </a>
             <a 
-              href="https://www.instagram.com/horinana_tattoo?igsh=aWF5YW8zaTdndHRv&utm_source=qr" 
+              href="" 
               target="_blank" 
               rel="noreferrer" 
               className="social-btn"
             >
               <Camera className="social-icon" /> 
               <span className="social-text">INSTAGRAM</span>
-              <span className="social-sub">@horinana_tattoo</span>
+              <span className="social-sub">@decapitated_doll</span>
             </a>
             <a 
               href="https://weibo.com/u/3535364641" 
